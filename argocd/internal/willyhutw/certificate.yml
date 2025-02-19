@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: www-dev-willyhu-tw-tls
+  namespace: istio-system
+spec:
+  secretName: www-dev-willyhu-tw-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  dnsNames:
+    - www-dev.willyhu.tw
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  usages:
+    - digital signature
+    - key encipherment

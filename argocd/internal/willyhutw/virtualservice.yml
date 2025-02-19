@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: willyhu-tw-virtualservice
+  namespace: internal
+spec:
+  hosts:
+    - www-dev.willyhu.tw
+  gateways:
+    - willyhu-tw-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: willyhutw
+            port:
+              number: 80

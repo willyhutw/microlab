@@ -1,21 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ext-ingress-nginx
+  name: willyhutw
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:willyhutw/tinylab.git'
-    path: argocd/external/ingress-nginx
+    repoURL: 'git@github.com:willyhutw/microlab.git'
+    path: argocd/internal/willyhutw
     targetRevision: HEAD
-    helm:
-      valueFiles:
-        - values.yaml
-      releaseName: ext
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: external
+    namespace: internal
   syncPolicy:
     automated:
       prune: true
