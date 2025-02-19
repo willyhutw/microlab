@@ -1,0 +1,54 @@
+# https://artifacthub.io/packages/helm/prometheus-community/prometheus
+prometheus:
+  server:
+    global:
+      scrape_interval: 1m
+      scrape_timeout: 10s
+      evaluation_interval: 1m
+    ingress:
+      enabled: false
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - tinylab-node-1
+    persistentVolume:
+      existingClaim: "prometheus"
+    replicaCount: 1
+    resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
+    retention: "30d"
+    retentionSize: "16GB"
+  alertmanager:
+    enabled: false
+  kube-state-metrics:
+    enabled: true
+  prometheus-node-exporter:
+    enabled: true
+  prometheus-pushgateway:
+    enabled: false
+  extraScrapeConfigs: |
+    - job_name: pfsense
+      static_configs:
+        - targets:
+            - 192.168.13.1
+      metrics_path: /snmp
+      params:
+        auth: [public_v2]
+        module: [pfsense]
+      relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          replacement: prometheus-snmp-exporter:9116

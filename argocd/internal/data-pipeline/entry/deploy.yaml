@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-entry
+  namespace: monitoring
+  labels:
+    app: data-entry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-entry
+  template:
+    metadata:
+      labels:
+        app: data-entry
+    spec:
+      containers:
+        - name: data-entry
+          image: public.ecr.aws/k1l6o6j1/fluentbit:v3.2.5-base
+          command: ["/fluent-bit/bin/fluent-bit"]
+          args: ["-c", "/fluent-bit/etc/fluent-bit.yaml"]
+          resources: {}
+          ports:
+            - containerPort: 5140
+              protocol: UDP
+          volumeMounts:
+            - mountPath: /fluent-bit/etc
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: data-entry
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - tinylab-node-1

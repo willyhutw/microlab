@@ -1,0 +1,27 @@
+# https://artifacthub.io/packages/helm/grafana/grafana
+grafana:
+  replicas: 1
+  createConfigmap: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - tinylab-node-1
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - grafana.willyhu.tw
+    tls:
+      - secretName: grafana-willyhu-tw-tls
+        hosts:
+          - grafana.willyhu.tw
+  persistence:
+    enabled: true
+    existingClaim: grafana

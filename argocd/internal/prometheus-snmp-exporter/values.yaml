@@ -1,0 +1,37 @@
+prometheus-snmp-exporter:
+  replicas: 1
+  image:
+    repository: prom/snmp-exporter
+    tag: v0.25.0
+  rbac:
+    create: true
+  serviceAccount:
+    create: true
+    name: prometheus-snmp-exporter
+  resources: {}
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: http
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: http
+  service:
+    type: ClusterIP
+    port: 9116
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - tinylab-node-1
+  extraConfigmapMounts:
+    - name: config
+      mountPath: /etc/snmp_exporter/snmp.yml
+      subPath: snmp.yml
+      configMap: prometheus-snmp-exporter
+      readOnly: true

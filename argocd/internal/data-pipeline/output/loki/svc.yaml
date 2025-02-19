@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-output-loki
+  namespace: monitoring
+  labels:
+    app: data-output-loki
+spec:
+  selector:
+    app: data-output-loki
+  ports:
+    - port: 25001
+      targetPort: 25001

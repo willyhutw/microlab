@@ -1,0 +1,171 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-filter-pfsense
+  namespace: monitoring
+data:
+  fluent.conf: |-
+    <system>
+      log_level info
+    </system>
+
+    <source>
+      @type forward
+      port 24225
+      tag pfsense
+    </source>
+
+    <match pfsense>
+      @type rewrite_tag_filter
+      <rule>
+        key ident
+        pattern ^(.+)$
+        tag pf.$1
+      </rule>
+    </match>
+
+    # pfsense - filterlog
+    # https://docs.netgate.com/pfsense/en/latest/monitoring/logs/raw-filter-format.html
+    <filter pf.filterlog>
+      @type parser
+      key_name message
+      reserve_data true
+      reserve_time true
+      <parse>
+        @type csv
+        keys rule-number,sub-rule-number,anchor,tracker,real-interface,reason,action,direction,ip-version
+        parser_type fast
+      </parse>
+    </filter>
+
+    <match pf.filterlog>
+      @type rewrite_tag_filter
+      <rule>
+        key ip-version
+        pattern ^(.+)$
+        tag ${tag}.$1
+      </rule>
+    </match>
+
+    <filter pf.filterlog.4>
+      @type parser
+      key_name message
+      reserve_data true
+      reserve_time true
+      <parse>
+        @type csv
+        keys rule-number,sub-rule-number,anchor,tracker,real-interface,reason,action,direction,ip-version,tos,ecn,ttl,id,offset,flags,protocol-id,protocol-text,length,source-address,destination-address
+        parser_type fast
+      </parse>
+    </filter>
+
+    <filter pf.filterlog.6>
+      @type parser
+      key_name message
+      reserve_data true
+      reserve_time true
+      <parse>
+        @type csv
+        keys rule-number,sub-rule-number,anchor,tracker,real-interface,reason,action,direction,ip-version,class,flow-label,hop-limit,protocol-text,protocol-id,length,source-address,destination-address
+        parser_type fast
+      </parse>
+    </filter>
+
+    <match pf.filterlog.*>
+      @type rewrite_tag_filter
+      <rule>
+        key protocol-text
+        pattern ^(.+)$
+        tag ${tag}.$1
+      </rule>
+    </match>
+
+    <filter pf.filterlog.4.udp>
+      @type parser
+      key_name message
+      reserve_data true
+      reserve_time true
+      <parse>
+        @type csv
+        keys rule-number,sub-rule-number,anchor,tracker,real-interface,reason,action,direction,ip-version,tos,ecn,ttl,id,offset,flags,protocol-id,protocol-text,length,source-address,destination-address,source-port,destination-port,data-length
+        parser_type fast
+      </parse>
+    </filter>
+
+    <filter pf.filterlog.4.tcp>
+      @type parser
+      key_name message
+      reserve_data true
+      reserve_time true
+      <parse>
+        @type csv
+        keys rule-number,sub-rule-number,anchor,tracker,real-interface,reason,action,direction,ip-version,tos,ecn,ttl,id,offset,flags,protocol-id,protocol-text,length,source-address,destination-address,source-port,destination-port,data-length,tcp-flags,sequence-number,ack-number,tcp-window,urg,tcp-options
+        parser_type fast
+      </parse>
+    </filter>
+
+    <filter pf.filterlog.6.udp>
+      @type parser
+      key_name message
+      reserve_data true
+      reserve_time true
+      <parse>
+        @type csv
+        keys rule-number,sub-rule-number,anchor,tracker,real-interface,reason,action,direction,ip-version,class,flow-label,hop-limit,protocol-text,protocol-id,length,source-address,destination-address,source-port,destination-port,data-length
+        parser_type fast
+      </parse>
+    </filter>
+
+    <filter pf.filterlog.6.tcp>
+      @type parser
+      key_name message
+      reserve_data true
+      reserve_time true
+      <parse>
+        @type csv
+        keys rule-number,sub-rule-number,anchor,tracker,real-interface,reason,action,direction,ip-version,class,flow-label,hop-limit,protocol-text,protocol-id,length,source-address,destination-address,source-port,destination-port,data-length,tcp-flags,sequence-number,ack-number,tcp-window,urg,tcp-options
+        parser_type fast
+      </parse>
+    </filter>
+
+    <filter pf.filterlog.**>
+      @type geoip
+      geoip_lookup_keys source-address,destination-address
+      geoip2_database /opt/GeoLite2-City.mmdb
+      <record>
+        source-country ${country.names.en["source-address"]}
+        source-country-code ${country.iso_code["source-address"]}
+        destination-country ${country.names.en["destination-address"]}
+        destination-country-code ${country.iso_code["destination-address"]}
+      </record>
+    </filter>
+
+    <filter pf.**>
+      @type record_modifier
+      <record>
+        log-type ${record['ident']}
+      </record>
+      remove_keys host,pri,ident,pid,msgid,extradata,rule-number,sub-rule-number,anchor,tracker,reason,ip-version,tos,ecn,ttl,id,offset,flags,protocol-id,length,source-port,data-length,sequence-number,ack-number,tcp-window,urg,tcp-options,class,flow-label,hop-limit
+    </filter>
+
+    <match pf.**>
+      @type forward
+      <server>
+        host data-output-loki
+        port 25001
+      </server>
+      <buffer tag,time>
+        timekey 60
+        timekey_wait 10
+        timekey_use_utc true
+        chunk_limit_size 32MB
+        total_limit_size 256MB
+        flush_mode interval
+        flush_interval 6s
+        flush_thread_count 2
+        flush_at_shutdown true
+        retry_max_interval 10m
+        retry_timeout 3h
+        overflow_action drop_oldest_chunk
+      </buffer>
+    </match>

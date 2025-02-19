@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+  name: willyhutw
+  namespace: external
+spec:
+  ingressClassName: ext-nginx
+  rules:
+    - host: willyhu.tw
+      http:
+        paths:
+          - backend:
+              service:
+                name: willyhutw
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+    - host: www.willyhu.tw
+      http:
+        paths:
+          - backend:
+              service:
+                name: willyhutw
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - willyhu.tw
+        - www.willyhu.tw
+      secretName: www-willyhu-tw-tls

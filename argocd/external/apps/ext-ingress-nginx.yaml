@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ext-ingress-nginx
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'git@github.com:willyhutw/tinylab.git'
+    path: argocd/external/ingress-nginx
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
+      releaseName: ext
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: external
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

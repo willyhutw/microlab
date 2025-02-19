@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-output-loki
+  namespace: monitoring
+  labels:
+    app: data-output-loki
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-output-loki
+  template:
+    metadata:
+      labels:
+        app: data-output-loki
+    spec:
+      containers:
+        - name: data-output-loki
+          image: public.ecr.aws/k1l6o6j1/fluentbit:v3.2.5-base
+          command: ["/fluent-bit/bin/fluent-bit"]
+          args: ["-c", "/fluent-bit/etc/fluent-bit.yaml"]
+          resources: {}
+          ports:
+            - containerPort: 25001
+          volumeMounts:
+            - mountPath: /fluent-bit/etc
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: data-output-loki
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - tinylab-node-1

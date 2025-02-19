@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-output-loki
+  namespace: monitoring
+data:
+  fluent-bit.yaml: |-
+    service:
+      log_level: info
+    pipeline:
+      inputs:
+        - name: forward
+          port: 25001
+      outputs:
+        - name: loki
+          match: 'pf.**'
+          host: loki
+          port: 3100
+          line_format: key_value
+          labels: service_name=fluent-bit
+          label_keys: $log-type,$real-interface,$action,$direction,$protocol-text,$source-address,$destination-address,$destination-port,$source-country,$source-country-code,$destination-country,$destination-country-code,$tcp-flags
+          remove_keys: time
+          drop_single_key: true
+          auto_kubernetes_labels: false
