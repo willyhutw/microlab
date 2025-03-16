@@ -14,7 +14,7 @@ spec:
           - values.yaml
         releaseName: grafana
     - repoURL: 'git@github.com:willyhutw/microlab.git'
-      path: argocd/internal/grafana/resources
+      path: argocd/internal/grafana/resources/
       targetRevision: HEAD
   destination:
     server: 'https://kubernetes.default.svc'
