@@ -1,18 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: grafana
+  name: grafana-resources
   namespace: argocd
 spec:
   project: default
   sources:
     - repoURL: 'git@github.com:willyhutw/microlab.git'
-      path: argocd/internal/grafana
+      path: argocd/internal/grafana/resources
       targetRevision: HEAD
-      helm:
-        valueFiles:
-          - values.yaml
-        releaseName: grafana
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
