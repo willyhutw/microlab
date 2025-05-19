@@ -4,6 +4,15 @@ metadata:
   name: data-filter-willyhutw
   namespace: monitoring
 data:
+  real_ip.lua: |-
+    function extract_first_ip(tag, timestamp, record)
+        local ip = record["real_ip"]
+        if ip ~= nil then
+            local first_ip = string.match(ip, "^[^,%s]+")
+            record["real_ip"] = first_ip
+        end
+        return 1, timestamp, record
+    end
   fluent-bit.yaml: |-
     service:
       log_level: info
@@ -20,8 +29,10 @@ data:
           match: log.willyhutw.stdout
           key_name: message
           parser: nginx_access
-        - name: stdout
+        - name: lua
           match: log.willyhutw.stdout
+          script: /fluent-bit/etc/real_ip.lua
+          call: extract_first_ip
         - name: geoip2
           match: log.willyhutw.stdout
           database: /opt/GeoLite2-Country.mmdb
@@ -30,16 +41,6 @@ data:
           record:
             - source_country real_ip %{country.names.en}
             - source_country_code real_ip %{country.iso_code}
-        # - name: parser
-        #   match: log.willyhutw.stderr
-        #   key_name: message
-        #   parser: nginx_error
-        # - name: modify
-        #   match: log.willyhutw.stderr
-        #   remove:
-        #     - pid
-        #     - tid
-        #     - connection
         - name: modify
           match: log.**
           remove:
@@ -63,8 +64,3 @@ data:
         regex: '^(?<remote_addr>[^ ]*) - - \[(?<time_local>[^\]]*)\] "(?<method>[A-Z]+) (?<request>[^ ]+) (?<http_version>[^"]+)" (?<status>\d{3}) (?<body_bytes_sent>\d+) "(?<http_referer>[^"]*)" "(?<http_user_agent>[^"]*)" "(?<real_ip>[^"]*)"'
         time_key: time_local
         time_format: '%d/%b/%Y:%H:%M:%S %z'
-      # - name: nginx_error
-      #   format: regex
-      #   regex: '^(?<time_local>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[error\] (?<pid>\d+)#(?<tid>\d+): \*(?<connection>\d+) (?<message>.*), client: (?<client>[^,]+), server: (?<server>[^,]+), request: "(?<request>[^"]+)", host: "(?<host>[^"]+)"'
-      #   time_key: time_local
-      #   time_format: '%d/%b/%Y:%H:%M:%S %z'
