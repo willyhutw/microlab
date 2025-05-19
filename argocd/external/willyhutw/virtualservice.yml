@@ -5,6 +5,7 @@ metadata:
   namespace: willyhutw
 spec:
   hosts:
+    - willyhu.tw
     - www.willyhu.tw
   gateways:
     - willyhutw-gateway

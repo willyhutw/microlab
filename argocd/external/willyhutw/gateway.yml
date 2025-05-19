@@ -13,6 +13,7 @@ spec:
         name: http
         protocol: HTTP
       hosts:
+        - willyhu.tw
         - www.willyhu.tw
       tls:
         httpsRedirect: true
@@ -21,6 +22,7 @@ spec:
         name: https
         protocol: HTTPS
       hosts:
+        - willyhu.tw
         - www.willyhu.tw
       tls:
         credentialName: www-willyhu-tw-tls
