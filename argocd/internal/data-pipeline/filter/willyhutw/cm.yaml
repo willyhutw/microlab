@@ -20,6 +20,8 @@ data:
           match: log.willyhutw.stdout
           key_name: message
           parser: nginx_access
+        - name: stdout
+          match: log.willyhutw.stdout
         - name: geoip2
           match: log.willyhutw.stdout
           database: /opt/GeoLite2-Country.mmdb
