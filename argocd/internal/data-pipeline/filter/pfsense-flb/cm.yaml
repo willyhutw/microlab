@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-filter-pfsense-flb
+  namespace: monitoring
+data:
+  fluent-bit.yaml: |-
+    service:
+      log_level: info
+    pipeline:
+      inputs:
+        - name: forward
+          port: 24226
+          tag: pf
+      filters:
+        - name: modify
+          match: pf
+          rename:
+            - ident log_type
+        - name: rewrite_tag
+          match: pf
+          rule: $log_type .* $TAG.$log_type false
+        - name: parser
+          match: pf.filterlog
+          key_name: message
+          parser: pf_filterlog
+          reserve_data: true
+          preserve_key: true
+        - name: rewrite_tag
+          match: pf.filterlog
+          rule: $ip_version .* $TAG.$ip_version false
+        - name: rewrite_tag
+          match: pf.filterlog.4
+          rule: $protocol_text .* $TAG.$protocol_text false
+        - name: rewrite_tag
+          match: pf.filterlog.6
+          rule: $protocol_text .* $TAG.$protocol_text false
+        - name: modify
+          match: pf.filterlog.**
+          remove:
+            - ip_version
+            - protocol_text
+        - name: parser
+          match: pf.filterlog.4.tcp
+          key_name: message
+          parser: pf_filterlog_ipv4_tcp
+          reserve_data: true
+          preserve_key: false
+        - name: parser
+          match: pf.filterlog.4.udp
+          key_name: message
+          parser: pf_filterlog_ipv4_udp
+          reserve_data: true
+          preserve_key: false
+        - name: parser
+          match: pf.filterlog.6.tcp
+          key_name: message
+          parser: pf_filterlog_ipv6_tcp
+          reserve_data: true
+          preserve_key: false
+        - name: parser
+          match: pf.filterlog.6.udp
+          key_name: message
+          parser: pf_filterlog_ipv6_udp
+          reserve_data: true
+          preserve_key: false
+        - name: geoip2
+          match: pf.filterlog.**
+          database: /opt/GeoLite2-Country.mmdb
+          lookup_key:
+            - source_address
+            - destination_address
+          record:
+            - source_country source_address %{country.names.en}
+            - source_country_code source_address %{country.iso_code}
+            - destination_country destination_address %{country.names.en}
+            - destination_country_code destination_address %{country.iso_code}
+        - name: modify
+          match: pf.filterlog.**
+          remove:
+            - ack_number
+            - anchor
+            - class
+            - data_length
+            - ecn
+            - extradata
+            - flags
+            - flow_label
+            - hop_limit
+            - host
+            - id
+            - length
+            - msgid
+            - offset
+            - pid
+            - pri
+            - protocol_id
+            - reason
+            - rule_number
+            - sequence_number
+            - source_port
+            - sub_rule_number
+            - tcp_options
+            - tcp_window
+            - tos
+            - tracker
+            - ttl
+            - urg
+      outputs:
+        - name: forward
+          match: pf.**
+          host: data-output-loki
+          port: 25001
+          tls: off
+    parsers:
+      - name: json-log
+        format: json
+        time_key: time
+        time_format: '%Y-%m-%dT%H:%M:%S.%L%z'
+      - name: pf_filterlog
+        format: regex
+        regex: ^(?:[^,]*,){8}(?<ip_version>[^,]*),(?:[^,]*,){7}(?<protocol_text>[^,]*)
+      - name: pf_filterlog_ipv4_tcp
+        format: regex
+        regex: ^(?<rule_number>[^,]*),(?<sub_rule_number>[^,]*),(?<anchor>[^,]*),(?<tracker>[^,]*),(?<real_interface>[^,]*),(?<reason>[^,]*),(?<action>[^,]*),(?<direction>[^,]*),(?<ip_version>[^,]*),(?<tos>[^,]*),(?<ecn>[^,]*),(?<ttl>[^,]*),(?<id>[^,]*),(?<offset>[^,]*),(?<flags>[^,]*),(?<protocol_id>[^,]*),(?<protocol_text>[^,]*),(?<length>[^,]*),(?<source_address>[^,]*),(?<destination_address>[^,]*),(?<source_port>[^,]*),(?<destination_port>[^,]*),(?<data_length>[^,]*),(?<tcp_flags>[^,]*),(?<sequence_number>[^,]*),(?<ack_number>[^,]*),(?<tcp_window>[^,]*),(?<urg>[^,]*),(?<tcp_options>[^,]*)
+      - name: pf_filterlog_ipv4_udp
+        format: regex
+        regex: ^(?<rule_number>[^,]*),(?<sub_rule_number>[^,]*),(?<anchor>[^,]*),(?<tracker>[^,]*),(?<real_interface>[^,]*),(?<reason>[^,]*),(?<action>[^,]*),(?<direction>[^,]*),(?<ip_version>[^,]*),(?<tos>[^,]*),(?<ecn>[^,]*),(?<ttl>[^,]*),(?<id>[^,]*),(?<offset>[^,]*),(?<flags>[^,]*),(?<protocol_id>[^,]*),(?<protocol_text>[^,]*),(?<length>[^,]*),(?<source_address>[^,]*),(?<destination_address>[^,]*),(?<source_port>[^,]*),(?<destination_port>[^,]*),(?<data_length>[^,]*)
+      - name: pf_filterlog_ipv6_tcp
+        format: regex
+        regex: ^(?<rule_number>[^,]*),(?<sub_rule_number>[^,]*),(?<anchor>[^,]*),(?<tracker>[^,]*),(?<real_interface>[^,]*),(?<reason>[^,]*),(?<action>[^,]*),(?<direction>[^,]*),(?<ip_version>[^,]*),(?<class>[^,]*),(?<flow_label>[^,]*),(?<hop_limit>[^,]*),(?<protocol_text>[^,]*),(?<protocol_id>[^,]*),(?<length>[^,]*),(?<source_address>[^,]*),(?<destination_address>[^,]*),(?<source_port>[^,]*),(?<destination_port>[^,]*),(?<data_length>[^,]*),(?<tcp_flags>[^,]*),(?<sequence_number>[^,]*),(?<ack_number>[^,]*),(?<tcp_window>[^,]*),(?<urg>[^,]*),(?<tcp_options>[^,]*)
+      - name: pf_filterlog_ipv6_udp
+        format: regex
+        regex: ^(?<rule_number>[^,]*),(?<sub_rule_number>[^,]*),(?<anchor>[^,]*),(?<tracker>[^,]*),(?<real_interface>[^,]*),(?<reason>[^,]*),(?<action>[^,]*),(?<direction>[^,]*),(?<ip_version>[^,]*),(?<class>[^,]*),(?<flow_label>[^,]*),(?<hop_limit>[^,]*),(?<protocol_text>[^,]*),(?<protocol_id>[^,]*),(?<length>[^,]*),(?<source_address>[^,]*),(?<destination_address>[^,]*),(?<source_port>[^,]*),(?<destination_port>[^,]*),(?<data_length>[^,]*)

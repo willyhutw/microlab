@@ -1,35 +1,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: data-output-loki
+  name: data-filter-willyhutw
   namespace: monitoring
   labels:
-    app: data-output-loki
+    app: data-filter-willyhutw
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: data-output-loki
+      app: data-filter-willyhutw
   template:
     metadata:
       labels:
-        app: data-output-loki
+        app: data-filter-willyhutw
     spec:
+      initContainers:
+        #curl -sSfL -o /opt/GeoLite2-City.mmdb https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb \
+        - name: download-geoip-database
+          image: alpine/curl:8.12.1
+          command: ['sh', '-c', 'curl -fsSL -o /opt/GeoLite2-Country.mmdb https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb']
+          volumeMounts:
+            - name: opt
+              mountPath: "/opt"
       containers:
-        - name: data-output-loki
+        - name: data-filter-willyhutw
           image: public.ecr.aws/k1l6o6j1/fluentbit:v4.0.1
           command: ["/fluent-bit/bin/fluent-bit"]
           args: ["-c", "/fluent-bit/etc/fluent-bit.yaml"]
           resources: {}
           ports:
-            - containerPort: 25001
+            - containerPort: 24227
           volumeMounts:
             - mountPath: /fluent-bit/etc
               name: config
+            - mountPath: /opt
+              name: opt
       volumes:
         - name: config
           configMap:
-            name: data-output-loki
+            name: data-filter-willyhutw
+        - name: opt
+          emptyDir: {}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

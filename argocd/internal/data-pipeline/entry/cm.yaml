@@ -7,7 +7,6 @@ data:
   fluent-bit.yaml: |-
     service:
       log_level: info
-      parsers_file: parsers.conf
     pipeline:
       inputs:
         - name: syslog
@@ -17,13 +16,12 @@ data:
       outputs:
         - name: forward
           match: '*'
-          host: data-filter-pfsense
-          port: 24225
-  parsers.conf: |-
-    [PARSER]
-        Name        syslog-rfc5424
-        Format      regex
-        Regex       ^\<(?<pri>[0-9]{1,5})\>1 (?<time>[^ ]+) (?<host>[^ ]+) (?<ident>[^ ]+) (?<pid>[-0-9]+) (?<msgid>[^ ]+) (?<extradata>(\[(.*?)\]|-)) (?<message>.+)$
-        Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-        Time_Keep   On
+          host: data-filter-pfsense-flb
+          port: 24226
+    parsers:
+      - name: syslog-rfc5424
+        format: regex
+        regex: ^\<(?<pri>[0-9]{1,5})\>1 (?<time>[^ ]+) (?<host>[^ ]+) (?<ident>[^ ]+) (?<pid>[-0-9]+) (?<msgid>[^ ]+) (?<extradata>(\[(.*?)\]|-)) (?<message>.+)$
+        time_key: time
+        time_format: '%Y-%m-%dT%H:%M:%S.%L%z'
+        time_keep: true

@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-tail
+  namespace: monitoring
+data:
+  fluent-bit.yaml: |-
+    service:
+      log_level: info
+    pipeline:
+      inputs:
+        - name: tail
+          path: /var/log/containers/willyhutw-*
+          path_key: logpath
+          parser: docker
+          tag: log
+      filters:
+        - name: lua
+          match: log
+          script: /fluent-bit/etc/extract.lua
+          call: get_podname_from_logpath
+        - name: rewrite_tag
+          match: log
+          rule: $podname .* $TAG.$podname false
+      outputs:
+        - name: forward
+          match: log.willyhutw
+          host: data-filter-willyhutw
+          port: 24227
+    parsers:
+      - name: docker
+        format: regex
+        regex: '^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<flag>[FP]) (?<message>.*)$'
+        time_key: time
+        time_format: '%Y-%m-%dT%H:%M:%S.%L%z'
+  extract.lua: |-
+    function get_podname_from_logpath(tag, timestamp, record)
+      local path = record["logpath"]
+      if path ~= nil then
+        local pod_full = string.match(path, "^/var/log/containers/([^_]+)")
+        if pod_full ~= nil then
+          local pod_base = string.match(pod_full, "^([^-]+)")
+          record["podname"] = pod_base
+        end
+      end
+      return 1, timestamp, record
+    end

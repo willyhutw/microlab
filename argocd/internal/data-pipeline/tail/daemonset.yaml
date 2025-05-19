@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: data-tail
+  namespace: monitoring
+  labels:
+    app: data-tail
+spec:
+  selector:
+    matchLabels:
+      app: data-tail
+  template:
+    metadata:
+      labels:
+        app: data-tail
+    spec:
+      containers:
+        - name: data-tail
+          image: public.ecr.aws/k1l6o6j1/fluentbit:v4.0.1
+          command: ["/fluent-bit/bin/fluent-bit"]
+          args: ["-c", "/fluent-bit/etc/fluent-bit.yaml"]
+          resources: {}
+          volumeMounts:
+            - mountPath: /fluent-bit/etc
+              name: config
+            - mountPath: /var/log
+              name: varlog
+      volumes:
+        - name: config
+          configMap:
+            name: data-tail
+        - name: varlog
+          hostPath:
+            path: /var/log

@@ -13,12 +13,22 @@ data:
           port: 25001
       outputs:
         - name: loki
-          match: 'pf.**'
+          match: log.willyhutw.stdout
+          host: loki
+          port: 3100
+          line_format: key_value
+          labels: service_name=willyhutw-access
+          label_keys: $method,$request,$http_version,$status,$http_referer,$http_user_agent,$real_ip,$source_country,$source_country_code
+          remove_keys: time
+          drop_single_key: true
+          auto_kubernetes_labels: false
+        - name: loki
+          match: pf.**
           host: loki
           port: 3100
           line_format: key_value
           labels: service_name=fluent-bit
-          label_keys: $log-type,$real-interface,$action,$direction,$protocol-text,$source-address,$destination-address,$destination-port,$source-country,$source-country-code,$destination-country,$destination-country-code,$tcp-flags
+          label_keys: $log_type,$real_interface,$action,$direction,$protocol_text,$source_address,$destination_address,$destination_port,$source_country,$source_country_code,$destination_country,$destination_country_code,$tcp_flags,$ip_version
           remove_keys: time
           drop_single_key: true
           auto_kubernetes_labels: false

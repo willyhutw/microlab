@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: data-entry
-          image: public.ecr.aws/k1l6o6j1/fluentbit:v3.2.5-base
+          image: public.ecr.aws/k1l6o6j1/fluentbit:v4.0.1
           command: ["/fluent-bit/bin/fluent-bit"]
           args: ["-c", "/fluent-bit/etc/fluent-bit.yaml"]
           resources: {}
@@ -39,4 +39,4 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - microlab-node-1
+                      - micro-node-1

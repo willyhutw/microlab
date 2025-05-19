@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-filter-willyhutw
+  namespace: monitoring
+data:
+  fluent-bit.yaml: |-
+    service:
+      log_level: info
+    pipeline:
+      inputs:
+        - name: forward
+          port: 24227
+          tag: log.willyhutw
+      filters:
+        - name: rewrite_tag
+          match: log.willyhutw
+          rule: $stream .* $TAG.$stream false
+        - name: parser
+          match: log.willyhutw.stdout
+          key_name: message
+          parser: nginx_access
+        - name: geoip2
+          match: log.willyhutw.stdout
+          database: /opt/GeoLite2-Country.mmdb
+          lookup_key:
+            - real_ip
+          record:
+            - source_country real_ip %{country.names.en}
+            - source_country_code real_ip %{country.iso_code}
+        # - name: parser
+        #   match: log.willyhutw.stderr
+        #   key_name: message
+        #   parser: nginx_error
+        # - name: modify
+        #   match: log.willyhutw.stderr
+        #   remove:
+        #     - pid
+        #     - tid
+        #     - connection
+        - name: modify
+          match: log.**
+          remove:
+            - logpath
+            - remote_addr
+            - body_bytes_sent
+      outputs:
+        - name: forward
+          match: log.willyhutw.stdout
+          host: data-output-loki
+          port: 25001
+          tls: off
+    parsers:
+      - name: docker
+        format: regex
+        regex: '^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<flag>[FP]) (?<message>.*)$'
+        time_key: time
+        time_format: '%Y-%m-%dT%H:%M:%S.%L%z'
+      - name: nginx_access
+        format: regex
+        regex: '^(?<remote_addr>[^ ]*) - - \[(?<time_local>[^\]]*)\] "(?<method>[A-Z]+) (?<request>[^ ]+) (?<http_version>[^"]+)" (?<status>\d{3}) (?<body_bytes_sent>\d+) "(?<http_referer>[^"]*)" "(?<http_user_agent>[^"]*)" "(?<real_ip>[^"]*)"'
+        time_key: time_local
+        time_format: '%d/%b/%Y:%H:%M:%S %z'
+      # - name: nginx_error
+      #   format: regex
+      #   regex: '^(?<time_local>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[error\] (?<pid>\d+)#(?<tid>\d+): \*(?<connection>\d+) (?<message>.*), client: (?<client>[^,]+), server: (?<server>[^,]+), request: "(?<request>[^"]+)", host: "(?<host>[^"]+)"'
+      #   time_key: time_local
+      #   time_format: '%d/%b/%Y:%H:%M:%S %z'
