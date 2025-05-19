@@ -1,18 +1,19 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: willyhu-tw-gateway
-  namespace: internal
+  name: willyhutw-gateway
+  namespace: willyhutw
 spec:
   selector:
     istio: ingressgateway
+    igw-type: external
   servers:
     - port:
         number: 80
         name: http
         protocol: HTTP
       hosts:
-        - www-dev.willyhu.tw
+        - www.willyhu.tw
       tls:
         httpsRedirect: true
     - port:
@@ -20,7 +21,7 @@ spec:
         name: https
         protocol: HTTPS
       hosts:
-        - www-dev.willyhu.tw
+        - www.willyhu.tw
       tls:
-        credentialName: www-dev-willyhu-tw-tls
+        credentialName: www-willyhu-tw-tls
         mode: SIMPLE

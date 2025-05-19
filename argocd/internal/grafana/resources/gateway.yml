@@ -1,18 +1,19 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: grafana-dev-gateway
+  name: grafana-gateway
   namespace: monitoring
 spec:
   selector:
     istio: ingressgateway
+    igw-type: internal
   servers:
     - port:
         number: 80
         name: http
         protocol: HTTP
       hosts:
-        - grafana-dev.willyhu.tw
+        - grafana.willyhu.tw
       tls:
         httpsRedirect: true
     - port:
@@ -20,7 +21,7 @@ spec:
         name: https
         protocol: HTTPS
       hosts:
-        - grafana-dev.willyhu.tw
+        - grafana.willyhu.tw
       tls:
-        credentialName: grafana-dev-willyhu-tw-tls
+        credentialName: grafana-willyhu-tw-tls
         mode: SIMPLE

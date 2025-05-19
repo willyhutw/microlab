@@ -6,12 +6,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:willyhutw/microlab.git'
-    path: argocd/internal/willyhutw
+    repoURL: 'git@github.com:willyhutw/tinylab.git'
+    path: argocd/external/willyhutw
     targetRevision: HEAD
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: internal
+    namespace: willyhutw
   syncPolicy:
     automated:
       prune: true

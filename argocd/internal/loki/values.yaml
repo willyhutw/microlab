@@ -19,7 +19,7 @@ loki:
                 - key: kubernetes.io/hostname
                   operator: In
                   values:
-                    - microlab-node-1
+                    - micro-node-1
     persistence:
       enabled: false
       enableStatefulSetAutoDeletePVC: false

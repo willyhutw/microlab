@@ -15,7 +15,7 @@ prometheus:
                 - key: kubernetes.io/hostname
                   operator: In
                   values:
-                    - microlab-node-1
+                    - micro-node-1
     persistentVolume:
       existingClaim: "prometheus"
     replicaCount: 1
@@ -40,7 +40,7 @@ prometheus:
     - job_name: pfsense
       static_configs:
         - targets:
-            - 192.168.13.1
+            - 192.168.12.1
       metrics_path: /snmp
       params:
         auth: [public_v2]

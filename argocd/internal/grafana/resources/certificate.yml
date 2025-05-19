@@ -1,14 +1,14 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: grafana-dev-willyhu-tw-tls
+  name: grafana-willyhu-tw-tls
   namespace: istio-system
 spec:
-  secretName: grafana-dev-willyhu-tw-tls
+  secretName: grafana-willyhu-tw-tls
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   dnsNames:
-    - grafana-dev.willyhu.tw
+    - grafana.willyhu.tw
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
