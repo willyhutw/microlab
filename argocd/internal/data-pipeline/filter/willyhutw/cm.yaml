@@ -29,8 +29,6 @@ data:
           match: log.willyhutw.stdout
           key_name: message
           parser: nginx_access
-        - name: stdout
-          match: log.willyhutw.stdout
         - name: lua
           match: log.willyhutw.stdout
           script: /fluent-bit/etc/real_ip.lua
