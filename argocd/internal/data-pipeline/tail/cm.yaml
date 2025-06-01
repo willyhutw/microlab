@@ -10,7 +10,7 @@ data:
     pipeline:
       inputs:
         - name: tail
-          path: /var/log/containers/willyhutw-*
+          path: /var/log/containers/*_willyhutw_willyhutw-*
           path_key: logpath
           parser: docker
           tag: log
