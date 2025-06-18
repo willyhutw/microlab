@@ -6,13 +6,16 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:willyhutw/microlab.git'
-    path: argocd/internal/loki
-    targetRevision: HEAD
-    helm:
-      valueFiles:
-        - values.yaml
-      releaseName: loki
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/loki
+      targetRevision: HEAD
+      helm:
+        valueFiles:
+          - values.yaml
+        releaseName: loki
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/loki/resources
+      targetRevision: HEAD
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
