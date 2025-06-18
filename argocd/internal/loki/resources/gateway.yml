@@ -9,7 +9,7 @@ spec:
     igw-type: internal
   servers:
     - port:
-        number: 3000
+        number: 3100
         name: loki
         protocol: TCP
       hosts:
