@@ -9,7 +9,7 @@ spec:
     igw-type: internal
   servers:
     - port:
-        number: 3100
+        number: 80
         name: http
         protocol: HTTP
       hosts:
