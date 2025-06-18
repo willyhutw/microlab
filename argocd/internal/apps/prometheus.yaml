@@ -5,14 +5,17 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: 'git@github.com:willyhutw/microlab.git'
-    path: argocd/internal/prometheus
-    targetRevision: HEAD
-    helm:
-      valueFiles:
-        - values.yaml
-      releaseName: prometheus
+  sources:
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/prometheus
+      targetRevision: HEAD
+      helm:
+        valueFiles:
+          - values.yaml
+        releaseName: prometheus
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/prometheus/resources
+      targetRevision: HEAD
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
