@@ -9,19 +9,8 @@ spec:
     igw-type: internal
   servers:
     - port:
-        number: 80
-        name: http
-        protocol: HTTP
+        number: 3000
+        name: loki
+        protocol: TCP
       hosts:
         - loki.willyhu.tw
-      tls:
-        httpsRedirect: true
-    - port:
-        number: 443
-        name: https
-        protocol: HTTPS
-      hosts:
-        - loki.willyhu.tw
-      tls:
-        credentialName: loki-willyhu-tw-tls
-        mode: SIMPLE

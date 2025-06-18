@@ -16,4 +16,4 @@ spec:
         - destination:
             host: loki
             port:
-              number: 80
+              number: 3000
