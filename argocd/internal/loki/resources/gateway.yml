@@ -10,7 +10,7 @@ spec:
   servers:
     - port:
         number: 3100
-        name: loki
-        protocol: TCP
+        name: http
+        protocol: HTTP
       hosts:
         - loki.willyhu.tw
