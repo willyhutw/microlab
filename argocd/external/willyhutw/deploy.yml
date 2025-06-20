@@ -16,7 +16,7 @@ spec:
         app: willyhutw
     spec:
       containers:
-        - image: public.ecr.aws/k1l6o6j1/willyhutw:20250424-1
+        - image: public.ecr.aws/k1l6o6j1/willyhutw:20250620
           name: willyhutw
           ports:
             - containerPort: 80
