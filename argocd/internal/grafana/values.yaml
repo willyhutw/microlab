@@ -16,3 +16,48 @@ grafana:
   persistence:
     enabled: true
     existingClaim: grafana
+  grafana.ini:
+    analytics:
+      enabled: false
+      reporting_enabled: false
+      check_for_updates: false
+      check_for_plugin_updates: false
+      feedback_links_enabled: false
+    dashboards:
+      versions_to_keep: 10
+      min_refresh_interval: 1m
+    snapshots:
+      external_enabled: false
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: prometheus
+        type: prometheus
+        id: 1
+        uid: aemc2p7q8b8jke
+        orgId: 1
+        access: proxy
+        url: http://prometheus-server
+      - name: loki
+        type: loki
+        id: 2
+        uid: demc2t9ggk0lcf
+        orgId: 1
+        access: proxy
+        url: http://loki:3100
+  dashboardProviders:
+    providers.yaml:
+      apiVersion: 1
+      providers:
+      - name: default
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: true
+        updateIntervalSeconds: 60
+        allowUiUpdates: false
+        options:
+          path: /var/lib/grafana/dashboards
+  dashboardsConfigMaps:
+    default: gf-cm-default-dashboards

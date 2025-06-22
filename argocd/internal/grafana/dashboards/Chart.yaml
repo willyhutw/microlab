@@ -1,0 +1,4 @@
+apiVersion: v2
+name: grafana-dashboards
+description: Grafana dashboards for provisioning.
+version: 20150622-1521
