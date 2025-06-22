@@ -67,7 +67,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -96,9 +96,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -111,7 +109,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -129,7 +127,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -233,9 +231,7 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": [
-            "sum"
-          ],
+          "reducer": ["sum"],
           "show": false
         },
         "frameIndex": 6,
@@ -252,7 +248,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -267,7 +263,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -281,7 +277,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -296,7 +292,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -311,7 +307,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -326,7 +322,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -395,7 +391,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -438,9 +434,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -453,7 +447,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -471,7 +465,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -514,9 +508,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -529,7 +521,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -547,7 +539,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -590,9 +582,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -605,7 +595,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -623,7 +613,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -715,9 +705,7 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": [
-            "sum"
-          ],
+          "reducer": ["sum"],
           "show": false
         },
         "frameIndex": 6,
@@ -734,7 +722,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -749,7 +737,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -764,7 +752,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -821,7 +809,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -856,9 +844,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -871,7 +857,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -889,7 +875,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -932,9 +918,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -947,7 +931,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -965,7 +949,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -1000,9 +984,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -1015,7 +997,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1033,7 +1015,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -1068,9 +1050,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "/^Value$/",
           "values": false
         },
@@ -1083,7 +1063,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1101,7 +1081,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "description": "",
       "fieldConfig": {
@@ -1145,9 +1125,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "/^Value$/",
           "values": false
         },
@@ -1160,7 +1138,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1178,7 +1156,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -1213,9 +1191,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "/^Value$/",
           "values": false
         },
@@ -1228,7 +1204,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1246,7 +1222,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -1409,9 +1385,7 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": [
-            "sum"
-          ],
+          "reducer": ["sum"],
           "show": false
         },
         "frameIndex": 6,
@@ -1428,7 +1402,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1442,7 +1416,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1457,7 +1431,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1472,7 +1446,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1487,7 +1461,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1502,7 +1476,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1582,7 +1556,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -1648,11 +1622,7 @@
       "id": 21,
       "options": {
         "legend": {
-          "calcs": [
-            "max",
-            "mean",
-            "sum"
-          ],
+          "calcs": ["max", "mean", "sum"],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
@@ -1670,7 +1640,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1688,7 +1658,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "aemc2p7q8b8jke"
       },
       "fieldConfig": {
         "defaults": {
@@ -1754,11 +1724,7 @@
       "id": 27,
       "options": {
         "legend": {
-          "calcs": [
-            "max",
-            "mean",
-            "sum"
-          ],
+          "calcs": ["max", "mean", "sum"],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
@@ -1776,7 +1742,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "aemc2p7q8b8jke"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1801,7 +1767,7 @@
         "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "aemc2p7q8b8jke"
         },
         "definition": "label_values(pfStatusRunning,job)",
         "includeAll": false,
@@ -1821,7 +1787,7 @@
         "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "aemc2p7q8b8jke"
         },
         "definition": "label_values(ifAdminStatus{job=\"$job\"},ifName)",
         "includeAll": true,
@@ -1842,7 +1808,7 @@
         "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "aemc2p7q8b8jke"
         },
         "definition": "label_values(pfLabelsLblEvals{job=\"$job\"},pfLabelsLblName)",
         "includeAll": true,
@@ -1937,3 +1903,4 @@
   "version": 5,
   "weekStart": ""
 }
+
