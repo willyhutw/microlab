@@ -1990,6 +1990,19 @@ data:
                 labelname: extNames
                 oid: 1.3.6.1.4.1.2021.8.1.2
                 type: DisplayString
+          - name: extResult
+            oid: 1.3.6.1.4.1.2021.8.1.100
+            type: gauge
+            help: The result code (exit status) from the executed command. - 1.3.6.1.4.1.2021.8.1.100
+            indexes:
+              - labelname: extIndex
+                type: gauge
+            lookups:
+              - labels:
+                  - extIndex
+                labelname: extNames
+                oid: 1.3.6.1.4.1.2021.8.1.2
+                type: DisplayString
           - name: extOutput
             oid: 1.3.6.1.4.1.2021.8.1.101
             type: DisplayString
@@ -2004,9 +2017,38 @@ data:
                 oid: 1.3.6.1.4.1.2021.8.1.2
                 type: DisplayString
             regex_extracts:
-              cputemp:
-                - regex: '([0-9.]+)'
-                  value: $1
+              "":
+                - value: $1
+                  regex: ^(?:([0-9.]+))$
+          - name: extErrFix
+            oid: 1.3.6.1.4.1.2021.8.1.102
+            type: gauge
+            help: Setting this to one will try to fix the problem if the agent has been configured with a script to call to attempt to fix problems automatically using remote snmp operations. - 1.3.6.1.4.1.2021.8.1.102
+            indexes:
+              - labelname: extIndex
+                type: gauge
+            lookups:
+              - labels:
+                  - extIndex
+                labelname: extNames
+                oid: 1.3.6.1.4.1.2021.8.1.2
+                type: DisplayString
+            enum_values:
+              0: noError
+              1: runFix
+          - name: extErrFixCmd
+            oid: 1.3.6.1.4.1.2021.8.1.103
+            type: DisplayString
+            help: The command that gets run when the extErrFix column is set to 1. - 1.3.6.1.4.1.2021.8.1.103
+            indexes:
+              - labelname: extIndex
+                type: gauge
+            lookups:
+              - labels:
+                  - extIndex
+                labelname: extNames
+                oid: 1.3.6.1.4.1.2021.8.1.2
+                type: DisplayString
           - name: dskIndex
             oid: 1.3.6.1.4.1.2021.9.1.1
             type: gauge
