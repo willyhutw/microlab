@@ -1,6 +1,6 @@
-istio_namespace: "istio-system"
+istio_namespace: istio-system
 auth:
-  strategy: "anonymous"
+  strategy: anonymous
 deployment:
   view_only_mode: true
 external_services:
@@ -8,6 +8,3 @@ external_services:
     url: http://prometheus-server.monitoring.svc.cluster:9090
 server:
   port: 20001
-  observability:
-    metrics:
-      enabled: false
