@@ -33,6 +33,7 @@ loki:
   deploymentMode: SingleBinary
   loki:
     podLabels: {}
+    containerSecurityContext: {}
     useTestSchema: true
     testSchemaConfig:
       configs:
