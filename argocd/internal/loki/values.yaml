@@ -41,7 +41,7 @@ loki:
           - NET_RAW
         drop:
           - ALL
-      allowPrivilegeEscalation: false
+      allowPrivilegeEscalation: true
     useTestSchema: true
     testSchemaConfig:
       configs:
