@@ -33,7 +33,7 @@ loki:
   deploymentMode: SingleBinary
   loki:
     podLabels:
-      sidecar.istio.io/inject: "false"
+    # sidecar.istio.io/inject: "false"
     useTestSchema: true
     testSchemaConfig:
       configs:
