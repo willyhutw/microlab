@@ -1,0 +1,11 @@
+istio_namespace: "istio-system"
+deployment:
+  view_only_mode: true
+external_services:
+  custom_dashboards:
+    enabled: false
+server:
+  port: 20001
+  observability:
+    metrics:
+      enabled: false
