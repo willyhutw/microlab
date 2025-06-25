@@ -33,15 +33,15 @@ loki:
   deploymentMode: SingleBinary
   loki:
     podLabels: {}
-    containerSecurityContext:
-      readOnlyRootFilesystem: true
-      capabilities:
-        add:
-          - NET_ADMIN
-          - NET_RAW
-        drop:
-          - ALL
-      allowPrivilegeEscalation: true
+    containerSecurityContext: {}
+    # readOnlyRootFilesystem: true
+    # capabilities:
+    #   add:
+    #     - NET_ADMIN
+    #     - NET_RAW
+    #   drop:
+    #     - ALL
+    # allowPrivilegeEscalation: true
     useTestSchema: true
     testSchemaConfig:
       configs:
