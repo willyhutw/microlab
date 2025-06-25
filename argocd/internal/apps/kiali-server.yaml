@@ -2,17 +2,10 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: kiali
-  namespace: argocd
+  namespace: argocd-server
 spec:
   project: default
   sources:
-    - repoURL: 'git@github.com:willyhutw/microlab.git'
-      path: argocd/internal/kiali-operator
-      targetRevision: HEAD
-      helm:
-        valueFiles:
-          - values.yaml
-        releaseName: kiali-operator
     - repoURL: 'git@github.com:willyhutw/microlab.git'
       path: argocd/internal/kiali-server
       targetRevision: HEAD
