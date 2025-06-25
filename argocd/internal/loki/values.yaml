@@ -32,16 +32,8 @@ loki:
           claimName: loki
   deploymentMode: SingleBinary
   loki:
-    podLabels: {}
-    containerSecurityContext: {}
-    # readOnlyRootFilesystem: true
-    # capabilities:
-    #   add:
-    #     - NET_ADMIN
-    #     - NET_RAW
-    #   drop:
-    #     - ALL
-    # allowPrivilegeEscalation: true
+    podLabels:
+      sidecar.istio.io/inject: "false"
     useTestSchema: true
     testSchemaConfig:
       configs:
