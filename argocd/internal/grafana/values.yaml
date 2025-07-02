@@ -66,3 +66,4 @@ grafana:
             path: /var/lib/grafana/dashboards
   dashboardsConfigMaps:
     default: gf-cm-default-dashboards
+
