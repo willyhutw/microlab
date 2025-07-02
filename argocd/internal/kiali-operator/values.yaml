@@ -7,4 +7,7 @@ cr:
       strategy: anonymous
     external_services:
       prometheus:
-        url: http://prometheus-server.monitoring
+        url: http://prometheus-server.monitoring.svc.cluster.local
+      grafana:
+        internal_url: http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local
+        external_url: https://grafana.willyhu.tw
