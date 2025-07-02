@@ -1,0 +1,10 @@
+# https://github.com/kiali/helm-charts
+cr:
+  create: true
+  namespace: istio-system
+  spec:
+    auth:
+      strategy: anonymous
+    external_services:
+      prometheus:
+        url: http://prometheus-server.monitoring

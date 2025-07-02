@@ -10,7 +10,12 @@ spec:
       path: argocd/internal/kiali-operator
       targetRevision: HEAD
       helm:
+        valueFiles:
+          - values.yaml
         releaseName: kiali-operator
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/kiali-operator/resources
+      targetRevision: HEAD
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: istio-system
