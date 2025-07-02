@@ -10,5 +10,5 @@ kiali-operator:
         prometheus:
           url: http://prometheus-server.monitoring.svc.cluster.local
         grafana:
-          internal_url: http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local
+          internal_url: http://grafana.monitoring.svc.cluster.local
           external_url: https://grafana.willyhu.tw
