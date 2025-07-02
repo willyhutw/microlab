@@ -17,8 +17,6 @@ grafana:
     enabled: true
     existingClaim: grafana
   grafana.ini:
-    feature_toggles:
-      enable: displayAnonymousStats
     auth:
       anonymous:
         enabled: true
