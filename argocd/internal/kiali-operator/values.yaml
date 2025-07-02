@@ -1,13 +1,14 @@
 # https://github.com/kiali/helm-charts
-cr:
-  create: true
-  namespace: istio-system
-  spec:
-    auth:
-      strategy: anonymous
-    external_services:
-      prometheus:
-        url: http://prometheus-server.monitoring.svc.cluster.local
-      grafana:
-        internal_url: http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local
-        external_url: https://grafana.willyhu.tw
+kiali-operator:
+  cr:
+    create: true
+    namespace: istio-system
+    spec:
+      auth:
+        strategy: anonymous
+      external_services:
+        prometheus:
+          url: http://prometheus-server.monitoring.svc.cluster.local
+        grafana:
+          internal_url: http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local
+          external_url: https://grafana.willyhu.tw
