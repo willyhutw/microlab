@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: data-tail
+        version: 'v4.0.1'
     spec:
       containers:
         - name: data-tail

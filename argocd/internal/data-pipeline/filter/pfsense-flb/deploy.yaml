@@ -14,6 +14,7 @@ spec:
     metadata:
       labels:
         app: data-filter-pfsense-flb
+        version: 'v4.0.1'
     spec:
       initContainers:
         #curl -sSfL -o /opt/GeoLite2-City.mmdb https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb \
