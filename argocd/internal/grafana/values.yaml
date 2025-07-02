@@ -16,10 +16,9 @@ grafana:
   persistence:
     enabled: true
     existingClaim: grafana
+  env:
+    GF_AUTH_ANONYMOUS_ENABLED: true
   grafana.ini:
-    auth:
-      anonymous:
-        enabled: true
     analytics:
       enabled: false
       reporting_enabled: false
