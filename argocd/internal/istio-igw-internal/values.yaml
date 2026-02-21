@@ -5,4 +5,4 @@ gateway:
   service:
     annotations:
       lbipam.cilium.io/ips: 192.168.12.96
-    externalTrafficPolicy: Local
+    externalTrafficPolicy: Cluster
