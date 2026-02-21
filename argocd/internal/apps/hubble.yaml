@@ -1,20 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cilium
+  name: hubble
   namespace: argocd
 spec:
   project: default
   sources:
     - repoURL: 'git@github.com:willyhutw/microlab.git'
-      path: argocd/internal/cilium
+      path: argocd/internal/hubble
       targetRevision: HEAD
       helm:
         valueFiles:
           - values.yaml
         releaseName: cilium
     - repoURL: 'git@github.com:willyhutw/microlab.git'
-      path: argocd/internal/cilium/resources
+      path: argocd/internal/hubble/resources
       targetRevision: HEAD
   destination:
     name: micro
