@@ -19,13 +19,15 @@ kube-prometheus-stack:
                     operator: In
                     values:
                       - k8s-micro-node-3
-      volumes:
-        - name: prometheus-db
-          persistentVolumeClaim:
-            claimName: prometheus
-      volumeMounts:
-        - name: prometheus-db
-          mountPath: /prometheus
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-storage
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 32Gi
       additionalScrapeConfigs:
         - job_name: pfsense
           static_configs:
