@@ -24,7 +24,7 @@ spec:
           - values.yaml
         releaseName: grafana-dashboards
   destination:
-    server: 'https://kubernetes.default.svc'
+    name: micro
     namespace: monitoring
   syncPolicy:
     automated:

@@ -12,7 +12,7 @@ spec:
     directory:
       recurse: true
   destination:
-    server: 'https://kubernetes.default.svc'
+    name: micro
     namespace: monitoring
   syncPolicy:
     automated:

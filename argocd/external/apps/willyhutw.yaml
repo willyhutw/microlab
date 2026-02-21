@@ -10,7 +10,7 @@ spec:
     path: argocd/external/willyhutw
     targetRevision: HEAD
   destination:
-    server: 'https://kubernetes.default.svc'
+    name: micro
     namespace: willyhutw
   syncPolicy:
     automated:

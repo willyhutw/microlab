@@ -14,7 +14,7 @@ spec:
           - values.yaml
         releaseName: istiod
   destination:
-    server: 'https://kubernetes.default.svc'
+    name: micro
     namespace: istio-system
   syncPolicy:
     automated:

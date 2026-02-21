@@ -17,7 +17,7 @@ spec:
       path: argocd/internal/loki/resources
       targetRevision: HEAD
   destination:
-    server: 'https://kubernetes.default.svc'
+    name: micro
     namespace: monitoring
   syncPolicy:
     automated:
