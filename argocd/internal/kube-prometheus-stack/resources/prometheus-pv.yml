@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: grafana
+  name: prometheus
   namespace: monitoring
 spec:
   storageClassName: local-storage
   persistentVolumeReclaimPolicy: Retain
   capacity:
-    storage: 16Gi
+    storage: 32Gi
   accessModes:
     - ReadWriteOnce
   local:
-    path: /mnt/data/grafana
+    path: /mnt/data/prometheus
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -19,4 +19,4 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - micro-node-1
+                - k8s-micro-node-3
