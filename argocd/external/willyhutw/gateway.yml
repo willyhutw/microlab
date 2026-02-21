@@ -16,6 +16,12 @@ spec:
         - willyhu.tw
         - www.willyhu.tw
     - port:
+        number: 80
+        name: http-health
+        protocol: HTTP
+      hosts:
+        - "*"
+    - port:
         number: 443
         name: https
         protocol: HTTPS
