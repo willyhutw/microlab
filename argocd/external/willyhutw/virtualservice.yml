@@ -10,20 +10,11 @@ spec:
   gateways:
     - willyhutw-gateway
   http:
-    - match:
-        - uri:
-            prefix: /health
-      route:
+    - route:
         - destination:
             host: willyhutw
             port:
               number: 80
-    - match:
-        - uri:
-            prefix: /
-      redirect:
-        scheme: https
-        redirectCode: 301
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
