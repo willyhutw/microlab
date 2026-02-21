@@ -14,6 +14,11 @@ spec:
   destination:
     name: micro
     namespace: istio-system
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      jsonPointers:
+        - /webhooks/0/failurePolicy
   syncPolicy:
     automated:
       prune: true
