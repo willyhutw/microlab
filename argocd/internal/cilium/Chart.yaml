@@ -1,0 +1,10 @@
+apiVersion: v2
+name: cilium
+description: A Helm chart depends on cilium.
+type: application
+version: 1.17.4
+appVersion: 1.17.4
+dependencies:
+  - name: cilium
+    version: 1.17.4
+    repository: https://helm.cilium.io

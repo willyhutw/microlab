@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: base
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/base
+      targetRevision: HEAD
+  destination:
+    name: micro
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

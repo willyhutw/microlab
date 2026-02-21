@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: hubble-gateway
+  namespace: kube-system
+spec:
+  selector:
+    istio: ingressgateway
+    igw-type: internal
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - hubble.willyhu.tw
+      tls:
+        httpsRedirect: true
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - hubble.willyhu.tw
+      tls:
+        credentialName: hubble-willyhu-tw-tls
+        mode: SIMPLE

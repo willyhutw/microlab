@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: hubble-virtualservice
+  namespace: kube-system
+spec:
+  hosts:
+    - hubble.willyhu.tw
+  gateways:
+    - hubble-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: hubble-ui
+            port:
+              number: 80
