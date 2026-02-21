@@ -1,0 +1,8 @@
+gateway:
+  labels:
+    istio: ingressgateway
+    igw-type: external
+  service:
+    annotations:
+      lbipam.cilium.io/ips: 192.168.12.91
+    externalTrafficPolicy: Local

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: istiod
+description: A Helm chart depends on istiod.
+type: application
+version: 1.28.4
+appVersion: 1.28.4
+dependencies:
+  - name: istiod
+    version: 1.28.4
+    repository: https://istio-release.storage.googleapis.com/charts

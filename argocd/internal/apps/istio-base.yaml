@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-base
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/istio-base
+      targetRevision: HEAD
+      helm:
+        releaseName: istio-base
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
