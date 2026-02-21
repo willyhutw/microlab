@@ -17,7 +17,7 @@ spec:
         version: '20250828'
     spec:
       containers:
-        - image: public.ecr.aws/k1l6o6j1/willyhutw:20250828
+        - image: public.ecr.aws/k1l6o6j1/willyhutw:20260221
           name: willyhutw
           ports:
             - containerPort: 80
