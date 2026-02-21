@@ -64,6 +64,8 @@ kube-prometheus-stack:
 
   grafana:
     replicas: 1
+    deploymentStrategy:
+      type: Recreate
     createConfigmap: true
     affinity:
       nodeAffinity:

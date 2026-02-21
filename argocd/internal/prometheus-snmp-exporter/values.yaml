@@ -28,7 +28,7 @@ prometheus-snmp-exporter:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                  - micro-node-1
+                  - k8s-micro-node-1
   extraConfigmapMounts:
     - name: config
       mountPath: /etc/snmp_exporter/snmp.yml
