@@ -10,7 +10,7 @@ grafana:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                  - micro-node-1
+                  - k8s-micro-node-3
   ingress:
     enabled: false
   persistence:
