@@ -15,8 +15,6 @@ spec:
       hosts:
         - willyhu.tw
         - www.willyhu.tw
-      tls:
-        httpsRedirect: true
     - port:
         number: 443
         name: https

@@ -12,9 +12,15 @@ spec:
   http:
     - match:
         - uri:
-            prefix: /
+            prefix: /health
       route:
         - destination:
             host: willyhutw
             port:
               number: 80
+    - match:
+        - uri:
+            prefix: /
+      redirect:
+        scheme: https
+        redirectCode: 301
