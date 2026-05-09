@@ -43,12 +43,3 @@ spec:
         - name: config
           configMap:
             name: data-filter-pfsense-flb
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: micro/role
-                    operator: In
-                    values:
-                      - edge

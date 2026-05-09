@@ -32,12 +32,3 @@ spec:
         - name: config
           configMap:
             name: data-entry
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: micro/role
-                    operator: In
-                    values:
-                      - edge

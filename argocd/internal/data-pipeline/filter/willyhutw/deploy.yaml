@@ -43,12 +43,3 @@ spec:
             name: data-filter-willyhutw
         - name: opt
           emptyDir: {}
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: micro/role
-                    operator: In
-                    values:
-                      - edge

@@ -31,12 +31,3 @@ spec:
         - name: config
           configMap:
             name: data-output-loki
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: micro/role
-                    operator: In
-                    values:
-                      - edge

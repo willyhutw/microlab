@@ -20,7 +20,7 @@ ArgoCD application manifests for a 4-node Raspberry Pi 5 Kubernetes cluster (mic
 
 | Node | Hostname | Label | Role |
 |------|----------|-------|------|
-| 1 | k8s-micro-node-1 | `micro/role=edge` | worker — data pipeline, SNMP exporter |
+| 1 | k8s-micro-node-1 | — | worker |
 | 2 | k8s-micro-node-2 | — | worker |
 | 3 | k8s-micro-node-3 | `micro/role=monitoring` | worker — monitoring stack (Prometheus, Grafana, Loki) |
 
@@ -35,6 +35,7 @@ ArgoCD application manifests for a 4-node Raspberry Pi 5 Kubernetes cluster (mic
 | istiod | istio/istiod | 1.28.4 | istio-system | Istio control plane (JSON access logging) |
 | istio-igw-internal | istio/gateway | 1.28.4 | istio-system | Internal ingress gateway (`192.168.12.96`) |
 | istio-igw-external | istio/gateway | 1.28.4 | istio-system | External ingress gateway (`192.168.12.91`) |
+| data-pipeline/entry | — | — | monitoring | Syslog receiver from pfSense (`192.168.12.97:5140 UDP`) |
 | hubble | cilium/cilium | 1.19.3 | kube-system | Cilium Hubble relay + UI |
 | kiali-operator | kiali/kiali-operator | 2.12.0 | istio-system | Service mesh observability |
 | kube-prometheus-stack | prometheus-community/kube-prometheus-stack | 82.1.1 | monitoring | Prometheus + Grafana + AlertManager |
@@ -85,7 +86,6 @@ ArgoCD application manifests for a 4-node Raspberry Pi 5 Kubernetes cluster (mic
 Apply these labels before running ArgoCD apps:
 
 ```bash
-kubectl label node k8s-micro-node-1 micro/role=edge
 kubectl label node k8s-micro-node-3 micro/role=monitoring
 ```
 

@@ -5,12 +5,13 @@ metadata:
   namespace: monitoring
   labels:
     app: data-entry
+  annotations:
+    lbipam.cilium.io/ips: 192.168.12.97
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: data-entry
   ports:
     - port: 5140
       protocol: UDP
       targetPort: 5140
-      nodePort: 32767
