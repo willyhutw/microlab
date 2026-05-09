@@ -101,11 +101,16 @@ kube-prometheus-stack:
       datasources.yaml:
         apiVersion: 1
         deleteDatasources:
-          - name: loki
-            orgId: 1
           - name: prometheus
             orgId: 1
-        datasources: []
+        datasources:
+          - name: loki
+            type: loki
+            id: 2
+            uid: demc2t9ggk0lcf
+            orgId: 1
+            access: proxy
+            url: http://loki:3100
     dashboardProviders:
       providers.yaml:
         apiVersion: 1
