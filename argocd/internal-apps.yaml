@@ -1,21 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: data-pipeline
+  name: internal
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
   source:
     repoURL: 'git@github.com:willyhutw/microlab.git'
+    path: argocd/internal/apps
     targetRevision: HEAD
-    path: argocd/internal/data-pipeline
-    directory:
-      recurse: true
   destination:
-    name: micro
-    namespace: monitoring
+    server: https://kubernetes.default.svc
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
