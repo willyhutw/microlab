@@ -100,14 +100,8 @@ kube-prometheus-stack:
     datasources:
       datasources.yaml:
         apiVersion: 1
+        prune: true
         datasources:
-          - name: prometheus
-            type: prometheus
-            id: 1
-            uid: aemc2p7q8b8jke
-            orgId: 1
-            access: proxy
-            url: http://prometheus-kube-prometheus-stack-prometheus:9090
           - name: loki
             type: loki
             id: 2
