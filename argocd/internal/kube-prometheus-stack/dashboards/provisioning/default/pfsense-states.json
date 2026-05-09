@@ -59,7 +59,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -133,7 +135,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -150,10 +154,10 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "extOutput{job=\"pfsense\", extIndex=\"0\", extNames=\"cputemp\"}",
+          "expr": "max(extOutput{job=\"pfsense\", extNames=~\"cpu[0-9]_temp\"})",
           "format": "table",
           "instant": true,
-          "legendFormat": "{{ extOutput }}",
+          "legendFormat": "CPU Temp (max)",
           "range": false,
           "refId": "A"
         }
@@ -235,7 +239,11 @@
       "id": 29,
       "options": {
         "legend": {
-          "calcs": ["min", "lastNotNull", "max"],
+          "calcs": [
+            "min",
+            "lastNotNull",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": false
@@ -255,10 +263,10 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "extOutput{job=\"pfsense\", extIndex=\"0\", extNames=\"cputemp\"}",
+          "expr": "extOutput{job=\"pfsense\", extNames=~\"cpu[0-9]_temp|acpi_temp\"}",
           "format": "time_series",
           "instant": false,
-          "legendFormat": "{{ extNames }}",
+          "legendFormat": "{{extNames}}",
           "range": true,
           "refId": "A"
         }
@@ -312,7 +320,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -386,7 +396,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -460,7 +472,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -639,7 +653,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -705,7 +721,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -779,7 +797,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -950,7 +970,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -1016,7 +1038,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "/^Value$/",
           "values": false
         },
@@ -1091,7 +1115,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "/^Value$/",
           "values": false
         },
@@ -1263,7 +1289,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "/^Value$/",
           "values": false
         },
@@ -1398,7 +1426,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 6,
@@ -1638,7 +1668,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 6,
@@ -1905,7 +1937,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 6,
@@ -2142,7 +2176,11 @@
       "id": 21,
       "options": {
         "legend": {
-          "calcs": ["max", "mean", "sum"],
+          "calcs": [
+            "max",
+            "mean",
+            "sum"
+          ],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
@@ -2244,7 +2282,11 @@
       "id": 27,
       "options": {
         "legend": {
-          "calcs": ["max", "mean", "sum"],
+          "calcs": [
+            "max",
+            "mean",
+            "sum"
+          ],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
@@ -2418,7 +2460,15 @@
     "to": "now"
   },
   "timepicker": {
-    "refresh_intervals": ["1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
   },
   "timezone": "browser",
   "title": "pfSense - States",
