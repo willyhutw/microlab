@@ -100,9 +100,6 @@ kube-prometheus-stack:
     datasources:
       datasources.yaml:
         apiVersion: 1
-        deleteDatasources:
-          - name: prometheus
-            orgId: 1
         datasources:
           - name: loki
             type: loki
