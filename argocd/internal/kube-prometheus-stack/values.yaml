@@ -15,10 +15,10 @@ kube-prometheus-stack:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: micro/role
                     operator: In
                     values:
-                      - k8s-micro-node-3
+                      - monitoring
       storageSpec:
         volumeClaimTemplate:
           spec:
@@ -74,10 +74,10 @@ kube-prometheus-stack:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
-                - key: kubernetes.io/hostname
+                - key: micro/role
                   operator: In
                   values:
-                    - k8s-micro-node-3
+                    - monitoring
     ingress:
       enabled: false
     persistence:

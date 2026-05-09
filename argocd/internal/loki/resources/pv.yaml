@@ -1,22 +1,22 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: grafana
+  name: loki
   namespace: monitoring
 spec:
   storageClassName: local-storage
   persistentVolumeReclaimPolicy: Retain
   capacity:
-    storage: 16Gi
+    storage: 32Gi
   accessModes:
     - ReadWriteOnce
   local:
-    path: /mnt/data/grafana
+    path: /mnt/data/loki
   nodeAffinity:
     required:
       nodeSelectorTerms:
         - matchExpressions:
-            - key: kubernetes.io/hostname
+            - key: micro/role
               operator: In
               values:
-                - k8s-micro-node-3
+                - monitoring
