@@ -15,6 +15,9 @@ spec:
         valueFiles:
           - values.yaml
         releaseName: istiod
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/istiod/resources
+      targetRevision: HEAD
   destination:
     name: micro
     namespace: istio-system

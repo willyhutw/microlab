@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-istiod-webhook
+  namespace: istio-system
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      serviceAccountName: istiod
+      containers:
+        - name: wait
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              until kubectl get mutatingwebhookconfiguration istio-sidecar-injector \
+                -o jsonpath='{.webhooks[0].clientConfig.caBundle}' 2>/dev/null | grep -q .; do
+                echo "Waiting for istiod webhook caBundle..."; sleep 2
+              done
+              echo "Webhook ready."
+      restartPolicy: OnFailure
