@@ -13,6 +13,7 @@ spec:
       labels:
         app: ollama
     spec:
+      runtimeClassName: nvidia
       tolerations:
         - key: dedicated
           operator: Equal
