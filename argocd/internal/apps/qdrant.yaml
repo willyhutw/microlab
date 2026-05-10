@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: qdrant
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: 'git@github.com:willyhutw/microlab.git'
+    targetRevision: HEAD
+    path: argocd/internal/qdrant
+    directory:
+      recurse: true
+  destination:
+    name: micro
+    namespace: ai
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

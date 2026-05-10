@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ollama
+spec:
+  storageClassName: local-storage
+  persistentVolumeReclaimPolicy: Retain
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: /mnt/data/ollama
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: nvidia.com/gpu.present
+              operator: In
+              values:
+                - "true"
