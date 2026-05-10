@@ -15,6 +15,15 @@ spec:
         app: data-tail
         version: 'v4.0.1'
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - arm64
       containers:
         - name: data-tail
           image: public.ecr.aws/k1l6o6j1/fluentbit:v4.0.1
