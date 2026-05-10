@@ -35,7 +35,17 @@ spec:
           volumeMounts:
             - name: device-plugin
               mountPath: /var/lib/kubelet/device-plugins
+            - name: cdi-etc
+              mountPath: /etc/cdi
+            - name: cdi-run
+              mountPath: /var/run/cdi
       volumes:
         - name: device-plugin
           hostPath:
             path: /var/lib/kubelet/device-plugins
+        - name: cdi-etc
+          hostPath:
+            path: /etc/cdi
+        - name: cdi-run
+          hostPath:
+            path: /var/run/cdi
