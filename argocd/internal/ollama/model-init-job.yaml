@@ -24,8 +24,10 @@ spec:
             - |
               echo "=== Ollama Model Init ==="
               ollama pull llama3.2:3b
-              ollama pull qwen2.5:7b
+              ollama pull qwen3.5:4b
               ollama pull deepseek-r1:7b
               ollama pull gemma3:4b
+              ollama pull granite4.1:3b
+              ollama pull lfm2.5-thinking:1.2b
               ollama pull nomic-embed-text
               echo "=== Done ==="
