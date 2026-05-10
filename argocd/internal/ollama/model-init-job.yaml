@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ollama-model-init
+  namespace: ai
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: model-init
+          image: ollama/ollama:latest
+          env:
+            - name: OLLAMA_HOST
+              value: http://ollama.ai.svc.cluster.local:11434
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "=== Ollama Model Init ==="
+              ollama pull llama3.2:3b
+              ollama pull qwen2.5:7b
+              ollama pull deepseek-r1:7b
+              ollama pull gemma3:4b
+              ollama pull nomic-embed-text
+              echo "=== Done ==="
