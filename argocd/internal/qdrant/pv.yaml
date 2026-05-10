@@ -15,7 +15,7 @@ spec:
     required:
       nodeSelectorTerms:
         - matchExpressions:
-            - key: kubernetes.io/hostname
+            - key: nvidia.com/gpu.present
               operator: In
               values:
-                - k8s-micro-node-1
+                - "true"

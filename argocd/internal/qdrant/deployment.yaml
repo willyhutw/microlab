@@ -13,6 +13,11 @@ spec:
       labels:
         app: qdrant
     spec:
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: gpu
+          effect: NoSchedule
       containers:
         - name: qdrant
           image: qdrant/qdrant:latest
