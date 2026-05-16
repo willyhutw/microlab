@@ -37,8 +37,6 @@ spec:
                   name: langfuse-pipeline-credentials
                   key: secret-key
           volumeMounts:
-            - name: data
-              mountPath: /app/pipelines
             - name: pipeline-code
               mountPath: /app/pipelines/rag_pipeline.py
               subPath: rag_pipeline.py
@@ -49,9 +47,6 @@ spec:
             initialDelaySeconds: 20
             periodSeconds: 10
       volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: pipelines
         - name: pipeline-code
           configMap:
             name: rag-pipeline

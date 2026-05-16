@@ -3,8 +3,6 @@ kind: Kustomization
 
 resources:
   - deployment.yaml
-  - pv.yaml
-  - pvc.yaml
   - svc.yaml
 
 configMapGenerator:
