@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pipelines
+  namespace: ai
+spec:
+  selector:
+    app: pipelines
+  ports:
+    - port: 9099
+      targetPort: 9099
