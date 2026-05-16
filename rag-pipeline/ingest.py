@@ -80,9 +80,10 @@ def process_file(path: Path) -> list[dict]:
 # ── Embedding & Qdrant ─────────────────────────────────────────────────────────
 
 def embed(text: str) -> list[float]:
+    # mxbai-embed-large max context is 512 tokens (~1800 chars); truncate to be safe
     resp = requests.post(
         f"{OLLAMA_URL}/api/embed",
-        json={"model": EMBED_MODEL, "input": text},
+        json={"model": EMBED_MODEL, "input": text[:1800]},
         timeout=30,
     )
     resp.raise_for_status()
