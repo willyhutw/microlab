@@ -9,5 +9,3 @@ configMapGenerator:
   - name: rag-pipeline
     files:
       - rag_pipeline.py
-    options:
-      disableNameSuffixHash: true
