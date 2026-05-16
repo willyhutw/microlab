@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: qdrant-gateway
+  namespace: ai
+spec:
+  selector:
+    istio: ingressgateway
+    igw-type: internal
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - qdrant.willyhu.tw
+      tls:
+        httpsRedirect: true
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - qdrant.willyhu.tw
+      tls:
+        credentialName: qdrant-willyhu-tw-tls
+        mode: SIMPLE

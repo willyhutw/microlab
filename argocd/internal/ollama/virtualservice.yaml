@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: ollama-virtualservice
+  namespace: ai
+spec:
+  hosts:
+    - ollama.willyhu.tw
+  gateways:
+    - ollama-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: ollama
+            port:
+              number: 11434

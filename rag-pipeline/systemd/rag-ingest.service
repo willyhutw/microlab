@@ -1,0 +1,12 @@
+[Unit]
+Description=Obsidian Wiki RAG Ingestion
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/projects/personal/microlab/rag-pipeline
+ExecStart=/usr/bin/uv run %h/projects/personal/microlab/rag-pipeline/ingest.py
+Environment=OLLAMA_URL=https://ollama.willyhu.tw
+Environment=QDRANT_URL=https://qdrant.willyhu.tw
+StandardOutput=journal
+StandardError=journal

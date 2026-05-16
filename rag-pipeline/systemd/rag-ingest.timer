@@ -1,0 +1,9 @@
+[Unit]
+Description=Run Obsidian Wiki RAG Ingestion hourly
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+
+[Install]
+WantedBy=timers.target
