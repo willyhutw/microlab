@@ -1,22 +1,65 @@
 langfuse:
+  salt:
+    secretKeyRef:
+      name: langfuse-secrets
+      key: salt
+  encryptionKey:
+    secretKeyRef:
+      name: langfuse-secrets
+      key: encryption-key
   nextauth:
     url: "https://langfuse.willyhu.tw"
-  # All secrets come from langfuse-secrets (created via scripts/create-secrets.sh)
-  existingSecret: langfuse-secrets
-  existingSecretKey:
-    nextauthSecret: nextauth-secret
-    salt: salt
-    encryptionKey: encryption-key
-    databaseUrl: database-url
-  telemetryEnabled: false
+    secret:
+      secretKeyRef:
+        name: langfuse-secrets
+        key: nextauth-secret
+  features:
+    telemetryEnabled: false
 
-# Disable bundled PostgreSQL — using shared external instance in data namespace
+# External PostgreSQL in data namespace
 postgresql:
-  enabled: false
+  deploy: false
+  host: postgresql.data.svc.cluster.local
+  port: 5432
+  auth:
+    username: langfuse
+    database: langfuse
+    existingSecret: langfuse-secrets
+    secretKeys:
+      userPasswordKey: langfuse-db-password
 
-# Disable ClickHouse — Lite mode
+# Redis/Valkey — bundled, no persistence
+redis:
+  deploy: true
+  auth:
+    password: ""
+  resourcesPreset: nano
+  primary:
+    persistence:
+      enabled: false
+
+# ClickHouse — single node, no cluster, no ZooKeeper, no persistence
 clickhouse:
-  enabled: false
+  deploy: true
+  replicaCount: 1
+  clusterEnabled: false
+  resourcesPreset: micro
+  auth:
+    password: "langfuse"
+  persistence:
+    enabled: false
+  zookeeper:
+    enabled: false
+
+# MinIO — bundled, no persistence
+s3:
+  deploy: true
+  auth:
+    rootUser: minio
+    rootPassword: "langfuse"
+  resourcesPreset: nano
+  persistence:
+    enabled: false
 
 # Pi5-friendly resource limits
 web:
@@ -34,10 +77,6 @@ worker:
       memory: 256Mi
     limits:
       memory: 512Mi
-
-service:
-  type: ClusterIP
-  port: 3000
 
 ingress:
   enabled: false
