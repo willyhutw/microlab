@@ -24,6 +24,18 @@ spec:
               value: http://ollama.ai.svc.cluster.local:11434
             - name: QDRANT_URL
               value: http://qdrant.ai.svc.cluster.local:6333
+            - name: LANGFUSE_HOST
+              value: http://langfuse-web.ai.svc.cluster.local:3000
+            - name: LANGFUSE_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: langfuse-pipeline-credentials
+                  key: public-key
+            - name: LANGFUSE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: langfuse-pipeline-credentials
+                  key: secret-key
           volumeMounts:
             - name: data
               mountPath: /app/pipelines
