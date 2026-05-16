@@ -9,9 +9,27 @@ import json
 import os
 from typing import Generator, Iterator, List, Union
 
+import hashlib
+import re
+
 import requests
 from langfuse import Langfuse
 from qdrant_client import QdrantClient
+from qdrant_client.models import Fusion, FusionQuery, Prefetch, SparseVector
+
+
+SPARSE_DIM = 2**18
+
+def _tokenize(text: str) -> list[str]:
+    return re.findall(r'[一-鿿]|[a-zA-Z0-9]+', text.lower())
+
+def _query_sparse(text: str) -> SparseVector:
+    acc: dict[int, float] = {}
+    for term in set(_tokenize(text)):
+        idx = int(hashlib.md5(term.encode()).hexdigest()[:8], 16) % SPARSE_DIM
+        acc[idx] = acc.get(idx, 0.0) + 1.0
+    pairs = sorted(acc.items())
+    return SparseVector(indices=[i for i, _ in pairs], values=[v for _, v in pairs])
 
 
 class Pipeline:
@@ -46,10 +64,13 @@ class Pipeline:
         return resp.json()["embeddings"][0]
 
     def _retrieve(self, query: str) -> list:
-        vec = self._embed(query)
         return self.qdrant.query_points(
             self.collection,
-            query=vec,
+            prefetch=[
+                Prefetch(query=self._embed(query), using="dense", limit=20),
+                Prefetch(query=_query_sparse(query), using="sparse", limit=20),
+            ],
+            query=FusionQuery(fusion=Fusion.RRF),
             limit=self.top_k,
             with_payload=True,
         ).points

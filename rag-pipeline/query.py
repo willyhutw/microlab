@@ -3,20 +3,37 @@
 # dependencies = ["qdrant-client", "requests"]
 # ///
 
+import hashlib
 import os
+import re
 import sys
 
 import requests
 from qdrant_client import QdrantClient
-from qdrant_client.models import NamedVector
+from qdrant_client.models import Fusion, FusionQuery, Prefetch, SparseVector
 
 COLLECTION  = "obsidian-wiki"
+SPARSE_DIM  = 2**18
 OLLAMA_URL  = os.getenv("OLLAMA_URL", "http://localhost:11434")
 QDRANT_URL  = os.getenv("QDRANT_URL", "http://localhost:6333")
-EMBED_MODEL = "nomic-embed-text"
+EMBED_MODEL = "qwen3-embedding:0.6b"
 LLM_MODEL   = os.getenv("LLM_MODEL", "gemma3:4b")
-TOP_K       = 3
+TOP_K       = 5
 
+
+def tokenize(text: str) -> list[str]:
+    return re.findall(r'[一-鿿]|[a-zA-Z0-9]+', text.lower())
+
+def term_hash(term: str) -> int:
+    return int(hashlib.md5(term.encode()).hexdigest()[:8], 16) % SPARSE_DIM
+
+def query_sparse(text: str) -> SparseVector:
+    acc: dict[int, float] = {}
+    for term in set(tokenize(text)):
+        idx = term_hash(term)
+        acc[idx] = acc.get(idx, 0.0) + 1.0
+    pairs = sorted(acc.items())
+    return SparseVector(indices=[i for i, _ in pairs], values=[v for _, v in pairs])
 
 def embed(text: str) -> list[float]:
     resp = requests.post(
@@ -28,9 +45,17 @@ def embed(text: str) -> list[float]:
     return resp.json()["embeddings"][0]
 
 def search(question: str) -> list:
-    client = QdrantClient(url=QDRANT_URL)
-    vec = embed(question)
-    return client.query_points(COLLECTION, query=vec, limit=TOP_K, with_payload=True).points
+    client = QdrantClient(url=QDRANT_URL, timeout=30, prefer_grpc=False)
+    return client.query_points(
+        COLLECTION,
+        prefetch=[
+            Prefetch(query=embed(question), using="dense", limit=20),
+            Prefetch(query=query_sparse(question), using="sparse", limit=20),
+        ],
+        query=FusionQuery(fusion=Fusion.RRF),
+        limit=TOP_K,
+        with_payload=True,
+    ).points
 
 def ask(question: str):
     print(f"\n{'─'*60}")

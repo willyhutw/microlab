@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # /// script
-# dependencies = ["qdrant-client", "requests"]
+# dependencies = ["qdrant-client", "requests", "rank-bm25"]
 # ///
 
 import hashlib
@@ -9,20 +9,24 @@ import re
 from pathlib import Path
 
 import requests
+from rank_bm25 import BM25Okapi
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, PointStruct, VectorParams
+from qdrant_client.models import (
+    Distance, PointStruct, SparseVector, SparseVectorParams, VectorParams,
+)
 
 WIKI_DIR    = Path.home() / "sync-obsidian/wiki"
 EXCLUDE     = {"hot.md", "index.md", "log.md", "overview.md"}
 SKIP_DIRS   = {"meta"}
 COLLECTION  = "obsidian-wiki"
 VECTOR_DIM  = 1024
+SPARSE_DIM  = 2**18        # 262144 buckets, collision rate negligible for small corpora
 OLLAMA_URL  = os.getenv("OLLAMA_URL", "http://localhost:11434")
 QDRANT_URL  = os.getenv("QDRANT_URL", "http://localhost:6333")
 EMBED_MODEL = "qwen3-embedding:0.6b"
 
 
-# ── Processing ─────────────────────────────────────────────────────────────────
+# ── Text processing ────────────────────────────────────────────────────────────
 
 def find_files() -> list[Path]:
     return sorted(
@@ -77,7 +81,32 @@ def process_file(path: Path) -> list[dict]:
     return chunk_by_headers(text, source)
 
 
-# ── Embedding & Qdrant ─────────────────────────────────────────────────────────
+# ── Sparse (BM25) ──────────────────────────────────────────────────────────────
+
+def tokenize(text: str) -> list[str]:
+    # char-level Chinese + word-level English/numbers
+    return re.findall(r'[一-鿿]|[a-zA-Z0-9]+', text.lower())
+
+def term_hash(term: str) -> int:
+    return int(hashlib.md5(term.encode()).hexdigest()[:8], 16) % SPARSE_DIM
+
+def make_doc_sparse(bm25: BM25Okapi, doc_idx: int) -> SparseVector:
+    tf_dict = bm25.doc_freqs[doc_idx]
+    dl, avgdl = bm25.doc_len[doc_idx], bm25.avgdl
+    k1, b = bm25.k1, bm25.b
+    acc: dict[int, float] = {}
+    for term, tf in tf_dict.items():
+        idf = bm25.idf.get(term, 0.0)
+        tf_norm = tf * (k1 + 1) / (tf + k1 * (1 - b + b * dl / avgdl))
+        weight = idf * tf_norm
+        if weight > 0:
+            idx = term_hash(term)
+            acc[idx] = acc.get(idx, 0.0) + weight
+    pairs = sorted(acc.items())
+    return SparseVector(indices=[i for i, _ in pairs], values=[v for _, v in pairs])
+
+
+# ── Dense embedding & Qdrant ──────────────────────────────────────────────────
 
 def embed(text: str) -> list[float]:
     resp = requests.post(
@@ -94,54 +123,66 @@ def make_id(source: str, title: str) -> int:
 
 def setup_collection(client: QdrantClient):
     existing = [c.name for c in client.get_collections().collections]
-    if COLLECTION not in existing:
-        client.create_collection(
-            COLLECTION,
-            vectors_config=VectorParams(size=VECTOR_DIM, distance=Distance.COSINE),
-        )
-        print(f"  ✓ Created collection: {COLLECTION}")
-    else:
-        print(f"  ✓ Collection ready:   {COLLECTION}")
-
-def upsert_chunks(client: QdrantClient, chunks: list[dict]):
-    points = []
-    for c in chunks:
-        vec = embed(c["text"])
-        points.append(PointStruct(
-            id      = make_id(c["source"], c["title"]),
-            vector  = vec,
-            payload = {
-                "source":    c["source"],
-                "doc_title": c["doc_title"],
-                "title":     c["title"],
-                "content":   c["content"],
-            },
-        ))
-    client.upsert(collection_name=COLLECTION, points=points)
+    if COLLECTION in existing:
+        info = client.get_collection(COLLECTION)
+        if not info.config.params.sparse_vectors:
+            print("  ⚠ Recreating collection (schema upgrade: adding sparse vectors)...")
+            client.delete_collection(COLLECTION)
+        else:
+            print(f"  ✓ Collection ready:   {COLLECTION}")
+            return
+    client.create_collection(
+        COLLECTION,
+        vectors_config={"dense": VectorParams(size=VECTOR_DIM, distance=Distance.COSINE)},
+        sparse_vectors_config={"sparse": SparseVectorParams()},
+    )
+    print(f"  ✓ Created collection: {COLLECTION}")
 
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
     print(f"\n{'═'*60}")
-    print("  Obsidian Wiki — RAG Ingestion Pipeline")
+    print("  Obsidian Wiki — RAG Ingestion Pipeline (Hybrid)")
     print(f"{'═'*60}\n")
 
     client = QdrantClient(url=QDRANT_URL, timeout=30, prefer_grpc=False)
     setup_collection(client)
 
-    files = find_files()
-    print(f"  Found {len(files)} wiki files\n")
+    # Pass 1: collect all chunks + fit BM25
+    print("  Pass 1: collecting chunks & fitting BM25...")
+    all_chunks = []
+    for f in find_files():
+        all_chunks.extend(process_file(f))
+    corpus_tokens = [tokenize(c["text"]) for c in all_chunks]
+    bm25 = BM25Okapi(corpus_tokens)
+    print(f"  BM25 fitted on {len(all_chunks)} chunks, vocab={len(bm25.idf)} terms\n")
 
+    # Pass 2: embed (dense) + sparse + upsert, grouped by source file for display
+    print("  Pass 2: embedding & upserting...")
+    from itertools import groupby
     total = 0
-    for i, f in enumerate(files, 1):
-        chunks = process_file(f)
-        if not chunks:
-            continue
-        rel = f.relative_to(Path.home() / "sync-obsidian")
-        print(f"  [{i:2}/{len(files)}] {str(rel):<55} {len(chunks)} chunks")
-        upsert_chunks(client, chunks)
-        total += len(chunks)
+    chunk_idx = 0
+    for source, group in groupby(all_chunks, key=lambda c: c["source"]):
+        group = list(group)
+        points = []
+        for c in group:
+            dense_vec  = embed(c["text"])
+            sparse_vec = make_doc_sparse(bm25, chunk_idx)
+            points.append(PointStruct(
+                id     = make_id(c["source"], c["title"]),
+                vector = {"dense": dense_vec, "sparse": sparse_vec},
+                payload = {
+                    "source":    c["source"],
+                    "doc_title": c["doc_title"],
+                    "title":     c["title"],
+                    "content":   c["content"],
+                },
+            ))
+            chunk_idx += 1
+        client.upsert(collection_name=COLLECTION, points=points)
+        print(f"  {source:<60} {len(group)} chunks")
+        total += len(group)
 
     info = client.get_collection(COLLECTION)
     print(f"\n{'═'*60}")
