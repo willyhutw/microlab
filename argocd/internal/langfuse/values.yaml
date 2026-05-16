@@ -28,11 +28,11 @@ postgresql:
     secretKeys:
       userPasswordKey: langfuse-db-password
 
-# Redis/Valkey — bundled, no persistence
+# Redis/Valkey — bundled, no persistence, no auth (internal only)
 redis:
   deploy: true
   auth:
-    password: ""
+    enabled: false
   resourcesPreset: nano
   primary:
     persistence:
