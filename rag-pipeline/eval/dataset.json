@@ -1,0 +1,180 @@
+[
+  {
+    "id": 1,
+    "query": "Clario 現況的戰略價值?",
+    "expected_doc": "AI Engineering Career Roadmap",
+    "expected_section": "筆記",
+    "category": "career",
+    "note": "精準問法，直接對應 section 標題"
+  },
+  {
+    "id": 2,
+    "query": "Willy 的核心技術優勢是什麼？",
+    "expected_doc": "AI Engineering Career Roadmap",
+    "expected_section": "戰略定位",
+    "category": "career"
+  },
+  {
+    "id": 3,
+    "query": "為什麼選擇 ML Infra 而不是純 ML？",
+    "expected_doc": "AI Engineering Career Roadmap",
+    "expected_section": "戰略定位",
+    "category": "career",
+    "note": "模糊問法，需要語意理解"
+  },
+  {
+    "id": 4,
+    "query": "Willy 目前在哪裡工作，職位是什麼？",
+    "expected_doc": "About Willy",
+    "expected_section": "目前工作",
+    "category": "personal"
+  },
+  {
+    "id": 5,
+    "query": "英文學習計畫的起點和目標？",
+    "expected_doc": "English Learning Plan — B1 to C1",
+    "expected_section": "背景",
+    "category": "learning"
+  },
+  {
+    "id": 6,
+    "query": "VFIO suspend resume 問題怎麼解決？",
+    "expected_doc": "VFIO GPU Passthrough — ASUS ROG G14",
+    "expected_section": "Suspend/Resume 問題與解法",
+    "category": "homelab"
+  },
+  {
+    "id": 7,
+    "query": "GPU VM 每次重開機 crash loop 的根本原因？",
+    "expected_doc": "VFIO GPU Passthrough — ASUS ROG G14",
+    "expected_section": "VM 重開機 Crash Loop（2026-05-14 RCA）",
+    "category": "homelab"
+  },
+  {
+    "id": 8,
+    "query": "RAG pipeline 試過哪些 embedding model？最後選哪個？",
+    "expected_doc": "RAG Pipeline Roadmap（Phase 3）",
+    "expected_section": "Embedding Model 踩坑紀錄（2026-05-16）",
+    "category": "homelab"
+  },
+  {
+    "id": 9,
+    "query": "Hybrid Search 怎麼做 BM25 sparse vector？",
+    "expected_doc": "RAG Pipeline Roadmap（Phase 3）",
+    "expected_section": "Step 5：Hybrid Search ✅（2026-05-17 完成）",
+    "category": "homelab"
+  },
+  {
+    "id": 10,
+    "query": "obsidian-wiki collection 的 Qdrant 和 Ollama 連線資訊？",
+    "expected_doc": "RAG Pipeline Roadmap（Phase 3）",
+    "expected_section": "連線資訊（開新 session 時用）",
+    "category": "homelab"
+  },
+  {
+    "id": 11,
+    "query": "Langfuse 部署踩了哪些坑？",
+    "expected_doc": "Langfuse Deployment（Phase 3 Step 3）",
+    "expected_section": "部署踩坑紀錄",
+    "category": "homelab"
+  },
+  {
+    "id": 12,
+    "query": "Langfuse SDK v3 tracing 驗證結果？",
+    "expected_doc": "Langfuse Deployment（Phase 3 Step 3）",
+    "expected_section": "SDK Instrumentation（已完成）",
+    "category": "homelab"
+  },
+  {
+    "id": 13,
+    "query": "homelab 的 secret 管理現況？",
+    "expected_doc": "Secret Management Strategy",
+    "expected_section": "現況（Phase 3）：kubectl create secret（手動）",
+    "category": "homelab"
+  },
+  {
+    "id": 14,
+    "query": "homelab 叢集有幾個節點，各是什麼角色？",
+    "expected_doc": "Homelab Overview",
+    "expected_section": "K8s 叢集架構",
+    "category": "homelab"
+  },
+  {
+    "id": 15,
+    "query": "ingest.py 如何把 markdown 切成 chunk？",
+    "expected_doc": "RAG Pipeline Implementation",
+    "expected_section": "ingest.py 流程",
+    "category": "homelab"
+  },
+  {
+    "id": 16,
+    "query": "NVIDIA device plugin 的完整依賴鏈是什麼？",
+    "expected_doc": "NVIDIA Device Plugin — 啟動流程與 Ollama 依賴關係",
+    "expected_section": "完整依賴鏈",
+    "category": "homelab"
+  },
+  {
+    "id": 17,
+    "query": "dynamic pipeline two-phase pattern 怎麼運作？",
+    "expected_doc": "Dynamic Pipeline",
+    "expected_section": "Two-Phase Pattern",
+    "category": "work"
+  },
+  {
+    "id": 18,
+    "query": "GitLab branch 怎麼對應到 dev/val/prod 環境？",
+    "expected_doc": "Dynamic Pipeline",
+    "expected_section": "Branch → Environment Routing",
+    "category": "work"
+  },
+  {
+    "id": 19,
+    "query": "EKS Auto Mode 節點的生命週期？",
+    "expected_doc": "EKS Platform at Clario",
+    "expected_section": "EKS Auto Mode — Node Lifecycle",
+    "category": "work"
+  },
+  {
+    "id": 20,
+    "query": "Dynatrace alert 是怎麼 route 到正確 owner？",
+    "expected_doc": "Dynatrace Monitoring at Clario",
+    "expected_section": "Ownership Tagging — How Alerts Route",
+    "category": "work"
+  },
+  {
+    "id": 21,
+    "query": "Dynatrace CSI driver gRPC rate limit 問題的根因是什麼？",
+    "expected_doc": "Dynatrace CSI Driver — gRPC Rate Limit Issue",
+    "expected_section": "Root Cause",
+    "category": "work"
+  },
+  {
+    "id": 22,
+    "query": "Consul ConfigHub 的 URL 格式？",
+    "expected_doc": "Consul / ConfigHub",
+    "expected_section": "ConfigHub URL Pattern",
+    "category": "work"
+  },
+  {
+    "id": 23,
+    "query": "為什麼從 FluxCD 換到 ArgoCD？",
+    "expected_doc": "GitOps — FluxCD to ArgoCD Migration",
+    "expected_section": "Why Migrated",
+    "category": "work"
+  },
+  {
+    "id": 24,
+    "query": "Monaco 有哪三個 repo，各有什麼不同？",
+    "expected_doc": "Monaco — Dynatrace Config-as-Code",
+    "expected_section": "Three Repos — Know the Difference",
+    "category": "work"
+  },
+  {
+    "id": 25,
+    "query": "what is the dev-int EKS architecture?",
+    "expected_doc": "EKS Platform at Clario",
+    "expected_section": "Dev-Int Architecture",
+    "category": "work",
+    "note": "英文問法測試跨語言 retrieval"
+  }
+]
