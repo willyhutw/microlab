@@ -22,7 +22,7 @@ class Pipeline:
         self.embed_model = "qwen3-embedding:0.6b"
         self.llm_model = os.getenv("LLM_MODEL", "gemma3:4b")
         self.collection = "obsidian-wiki"
-        self.top_k = 3
+        self.top_k = 5
 
     async def on_startup(self):
         self.qdrant = QdrantClient(url=self.qdrant_url)
