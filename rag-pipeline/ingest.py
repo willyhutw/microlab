@@ -127,7 +127,7 @@ def main():
     print("  Obsidian Wiki — RAG Ingestion Pipeline")
     print(f"{'═'*60}\n")
 
-    client = QdrantClient(url=QDRANT_URL)
+    client = QdrantClient(url=QDRANT_URL, timeout=30, prefer_grpc=False)
     setup_collection(client)
 
     files = find_files()
