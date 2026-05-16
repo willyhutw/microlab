@@ -10,4 +10,4 @@ resources:
 configMapGenerator:
   - name: rag-pipeline
     files:
-      - rag_pipeline.py=../../../rag-pipeline/rag_pipeline.py
+      - rag_pipeline.py
