@@ -13,7 +13,7 @@ postgresql:
         create-grafana-db.sh: |
           #!/bin/bash
           set -e
-          export PGPASSWORD="${POSTGRESQL_POSTGRES_PASSWORD}"
+          export PGPASSWORD="$(cat /opt/bitnami/postgresql/secrets/postgres-password)"
           psql -U postgres -c "CREATE USER grafana WITH PASSWORD '${GRAFANA_PASSWORD}';"
           psql -U postgres -c "CREATE DATABASE grafana OWNER grafana;"
           psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE grafana TO grafana;"
