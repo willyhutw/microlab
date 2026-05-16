@@ -4,6 +4,8 @@ postgresql:
     secretKeys:
       adminPasswordKey: postgres-password
       userPasswordKey: password
+    username: langfuse
+    database: langfuse
 
   primary:
     # Create grafana database + user on first init.
