@@ -43,13 +43,27 @@ clickhouse:
   deploy: true
   replicaCount: 1
   clusterEnabled: false
-  resourcesPreset: micro
+  resourcesPreset: ""
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      memory: 2Gi
   auth:
     password: "langfuse"
   persistence:
     enabled: false
   zookeeper:
     enabled: false
+  # Disable verbose internal system logs to save memory on Pi5
+  extraConfig: |
+    <clickhouse>
+      <asynchronous_metric_log remove="1"/>
+      <query_log remove="1"/>
+      <query_thread_log remove="1"/>
+      <part_log remove="1"/>
+    </clickhouse>
 
 # MinIO — bundled, no persistence
 s3:
