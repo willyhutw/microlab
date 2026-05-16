@@ -30,4 +30,5 @@ spec:
               ollama pull granite4.1:3b
               ollama pull lfm2.5-thinking:1.2b
               ollama pull nomic-embed-text
+              ollama pull qwen3-embedding:0.6b
               echo "=== Done ==="
