@@ -19,7 +19,7 @@ class Pipeline:
         self.qdrant: QdrantClient = None
         self.ollama_url = os.getenv("OLLAMA_URL", "http://ollama.ai.svc.cluster.local:11434")
         self.qdrant_url = os.getenv("QDRANT_URL", "http://qdrant.ai.svc.cluster.local:6333")
-        self.embed_model = "nomic-embed-text"
+        self.embed_model = "qwen3-embedding:0.6b"
         self.llm_model = os.getenv("LLM_MODEL", "gemma3:4b")
         self.collection = "obsidian-wiki"
         self.top_k = 3

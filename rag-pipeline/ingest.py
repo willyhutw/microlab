@@ -16,10 +16,10 @@ WIKI_DIR    = Path.home() / "sync-obsidian/wiki"
 EXCLUDE     = {"hot.md", "index.md", "log.md", "overview.md"}
 SKIP_DIRS   = {"meta"}
 COLLECTION  = "obsidian-wiki"
-VECTOR_DIM  = 768
+VECTOR_DIM  = 1024
 OLLAMA_URL  = os.getenv("OLLAMA_URL", "http://localhost:11434")
 QDRANT_URL  = os.getenv("QDRANT_URL", "http://localhost:6333")
-EMBED_MODEL = "nomic-embed-text"
+EMBED_MODEL = "qwen3-embedding:0.6b"
 
 
 # ── Processing ─────────────────────────────────────────────────────────────────
@@ -80,10 +80,9 @@ def process_file(path: Path) -> list[dict]:
 # ── Embedding & Qdrant ─────────────────────────────────────────────────────────
 
 def embed(text: str) -> list[float]:
-    # mxbai-embed-large max context is 512 tokens (~1800 chars); truncate to be safe
     resp = requests.post(
         f"{OLLAMA_URL}/api/embed",
-        json={"model": EMBED_MODEL, "input": text[:1800]},
+        json={"model": EMBED_MODEL, "input": text},
         timeout=30,
     )
     resp.raise_for_status()
