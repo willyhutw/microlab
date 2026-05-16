@@ -132,7 +132,13 @@ class Pipeline:
                             output_tokens.append(token)
                             yield token
                         if data.get("done"):
-                            gen.update(output="".join(output_tokens))
+                            gen.update(
+                                output="".join(output_tokens),
+                                usage_details={
+                                    "input": data.get("prompt_eval_count", 0),
+                                    "output": data.get("eval_count", 0),
+                                },
+                            )
                             break
 
             trace.update(output="".join(output_tokens))

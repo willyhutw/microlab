@@ -88,17 +88,17 @@ ArgoCD application manifests for the micro cluster — 4× Raspberry Pi 5 nodes 
 │   │   ├── qdrant/                      # Qdrant vector database (Deployment + PV/PVC)
 │   │   ├── ollama/                      # Ollama LLM inference (Deployment + PV/PVC + model init job)
 │   │   ├── open-webui/                  # Open WebUI chat frontend (Deployment + Istio resources)
-│   │   ├── pipelines/                   # Open WebUI Pipelines (Deployment + PV for rag_pipeline.py)
+│   │   ├── pipelines/                   # Open WebUI Pipelines (Deployment + PV + ConfigMap for rag_pipeline.py)
 │   │   └── langfuse/                    # Langfuse LLM observability (multi-source: Helm + Git)
 │   │       ├── values.yaml              # Helm values (ClickHouse/Redis/MinIO/PostgreSQL config)
 │   │       └── resources/               # Certificate, Gateway, VirtualService
 │   └── external/
 │       ├── apps/                        # ArgoCD Application manifests (external)
 │       └── willyhutw/                   # Blog deployment manifests
-├── rag-pipeline/                        # RAG pipeline source (synced manually to Pipelines PV)
+├── rag-pipeline/                        # RAG pipeline source
 │   ├── ingest.py                        # Batch ingest: wiki → chunk → embed → Qdrant
 │   ├── query.py                         # CLI query tool for local testing
-│   └── rag_pipeline.py                  # Open WebUI Pipelines integration (Langfuse SDK v3)
+│   └── rag_pipeline.py                  # Canonical source — mirrored to pipelines/pipeline-cm.yaml for GitOps deploy
 └── scripts/
     └── create-secrets.sh                # Manual secret creation (not in ArgoCD)
 ```
