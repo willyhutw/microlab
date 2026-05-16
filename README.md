@@ -96,9 +96,11 @@ ArgoCD application manifests for the micro cluster — 4× Raspberry Pi 5 nodes 
 │       ├── apps/                        # ArgoCD Application manifests (external)
 │       └── willyhutw/                   # Blog deployment manifests
 ├── rag-pipeline/                        # RAG pipeline source
-│   ├── ingest.py                        # Batch ingest: wiki → chunk → embed → Qdrant
+│   ├── ingest.py                        # Batch ingest: wiki → chunk → embed → Qdrant (run by systemd timer on G14 host)
 │   ├── query.py                         # CLI query tool for local testing
-│   └── rag_pipeline.py                  # Canonical source — deployed via kustomize configMapGenerator in argocd/internal/pipelines/
+│   └── systemd/                         # G14 host systemd user units (hourly full re-index)
+│       ├── rag-ingest.service
+│       └── rag-ingest.timer
 └── scripts/
     └── create-secrets.sh                # Manual secret creation (not in ArgoCD)
 ```
