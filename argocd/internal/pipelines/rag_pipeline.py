@@ -94,6 +94,9 @@ class Pipeline:
                 name="retrieve", input=user_message
             ) as span:
                 results = self._retrieve(user_message)
+                if results:
+                    max_score = results[0].score
+                    results = [r for r in results if r.score >= max_score * 0.5]
                 span.update(
                     output=[
                         {
