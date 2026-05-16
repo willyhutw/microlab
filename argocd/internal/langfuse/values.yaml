@@ -28,13 +28,11 @@ postgresql:
     secretKeys:
       userPasswordKey: langfuse-db-password
 
-# Redis/Valkey — bundled, no persistence
-# existingSecret tells Langfuse to read the auto-generated Valkey password
+# Redis/Valkey — bundled, no persistence, internal only
 redis:
   deploy: true
   auth:
-    existingSecret: "langfuse-redis"
-    existingSecretPasswordKey: "valkey-password"
+    password: "langfuse-redis"
   resourcesPreset: nano
   primary:
     persistence:
