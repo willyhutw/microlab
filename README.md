@@ -1,6 +1,6 @@
 # microlab
 
-ArgoCD application manifests for a 4-node Raspberry Pi 5 Kubernetes cluster (micro cluster).
+ArgoCD application manifests for the micro cluster — 4× Raspberry Pi 5 nodes + 1× G14 GPU VM (RTX 2060 Max-Q via VFIO passthrough).
 
 ## Related Repositories
 
@@ -12,7 +12,7 @@ ArgoCD application manifests for a 4-node Raspberry Pi 5 Kubernetes cluster (mic
 
 ## Cluster
 
-- **4 nodes:** 1 control plane + 3 worker nodes (Raspberry Pi 5)
+- **5 nodes:** 1 control plane + 3 workers (Raspberry Pi 5) + 1 GPU worker (G14 VM)
 - **CNI:** Cilium 1.19.3 with L2 announcements and kube-proxy replacement
 - **Service mesh:** Istio 1.28.4
 - **Control plane:** `192.168.12.21:6443`
@@ -23,6 +23,7 @@ ArgoCD application manifests for a 4-node Raspberry Pi 5 Kubernetes cluster (mic
 | 1 | k8s-micro-node-1 | — | worker |
 | 2 | k8s-micro-node-2 | — | worker |
 | 3 | k8s-micro-node-3 | `micro/role=monitoring` | worker — monitoring stack (Prometheus, Grafana, Loki) |
+| 4 | k8s-micro-gpu-1 | `nvidia.com/gpu.present=true` | worker — GPU node (RTX 2060 Max-Q, VFIO passthrough from G14 host) |
 
 ## Apps
 
@@ -35,13 +36,19 @@ ArgoCD application manifests for a 4-node Raspberry Pi 5 Kubernetes cluster (mic
 | istiod | istio/istiod | 1.28.4 | istio-system | Istio control plane (JSON access logging) |
 | istio-igw-internal | istio/gateway | 1.28.4 | istio-system | Internal ingress gateway (`192.168.12.96`) |
 | istio-igw-external | istio/gateway | 1.28.4 | istio-system | External ingress gateway (`192.168.12.91`) |
-| data-pipeline/entry | — | — | monitoring | Syslog receiver from pfSense (`192.168.12.97:5140 UDP`) |
 | hubble | cilium/cilium | 1.19.3 | kube-system | Cilium Hubble relay + UI |
 | kiali-operator | kiali/kiali-operator | 2.12.0 | istio-system | Service mesh observability |
-| kube-prometheus-stack | prometheus-community/kube-prometheus-stack | 82.1.1 | monitoring | Prometheus + Grafana + AlertManager |
+| kube-prometheus-stack | prometheus-community/kube-prometheus-stack | 82.1.1 | monitoring | Prometheus + Grafana (PostgreSQL backend) + AlertManager |
 | loki | grafana/loki | 6.29.0 | monitoring | Log aggregation (single binary) |
 | prometheus-snmp-exporter | prometheus-community/prometheus-snmp-exporter | 9.3.0 | monitoring | SNMP metrics for pfSense |
-| data-pipeline | — | — | monitoring | Fluent Bit log pipeline (entry → filter → Loki) |
+| nvidia-device-plugin | — | v0.17.0 | kube-system | NVIDIA GPU device plugin DaemonSet for GPU node |
+| data-pipeline | — | — | monitoring | Fluent Bit log pipeline: syslog entry → filter → Loki |
+| postgresql | bitnami/postgresql | 18.6.6 | data | Shared PostgreSQL instance (Langfuse + Grafana) |
+| qdrant | — | — | ai | Vector database for RAG pipeline |
+| ollama | — | latest | ai | LLM inference server (GPU node, RTX 2060 Max-Q) |
+| open-webui | — | latest | ai | Chat UI — [chat.willyhu.tw](https://chat.willyhu.tw) |
+| pipelines | — | main | ai | Open WebUI Pipelines — custom RAG pipeline (rag_pipeline.py) |
+| langfuse | langfuse/langfuse | 1.5.30 | ai | LLM observability — [langfuse.willyhu.tw](https://langfuse.willyhu.tw) |
 
 ### External
 
@@ -74,11 +81,26 @@ ArgoCD application manifests for a 4-node Raspberry Pi 5 Kubernetes cluster (mic
 │   │   ├── kiali-operator/              # Kiali Helm chart + resources
 │   │   ├── kube-prometheus-stack/       # Monitoring stack Helm chart + resources + dashboards
 │   │   ├── loki/                        # Loki Helm chart + resources
-│   │   └── prometheus-snmp-exporter/    # SNMP exporter Helm chart
-│   │       └── tools/                   # generator.yaml for SNMP MIB generation (local tool)
+│   │   ├── prometheus-snmp-exporter/    # SNMP exporter Helm chart
+│   │   │   └── tools/                   # generator.yaml for SNMP MIB generation (local tool)
+│   │   ├── nvidia-device-plugin/        # NVIDIA GPU device plugin DaemonSet
+│   │   ├── postgresql/                  # Shared PostgreSQL (bitnami Helm chart + PV/PVC)
+│   │   ├── qdrant/                      # Qdrant vector database (Deployment + PV/PVC)
+│   │   ├── ollama/                      # Ollama LLM inference (Deployment + PV/PVC + model init job)
+│   │   ├── open-webui/                  # Open WebUI chat frontend (Deployment + Istio resources)
+│   │   ├── pipelines/                   # Open WebUI Pipelines (Deployment + PV for rag_pipeline.py)
+│   │   └── langfuse/                    # Langfuse LLM observability (multi-source: Helm + Git)
+│   │       ├── values.yaml              # Helm values (ClickHouse/Redis/MinIO/PostgreSQL config)
+│   │       └── resources/               # Certificate, Gateway, VirtualService
 │   └── external/
 │       ├── apps/                        # ArgoCD Application manifests (external)
 │       └── willyhutw/                   # Blog deployment manifests
+├── rag-pipeline/                        # RAG pipeline source (synced manually to Pipelines PV)
+│   ├── ingest.py                        # Batch ingest: wiki → chunk → embed → Qdrant
+│   ├── query.py                         # CLI query tool for local testing
+│   └── rag_pipeline.py                  # Open WebUI Pipelines integration (Langfuse SDK v3)
+└── scripts/
+    └── create-secrets.sh                # Manual secret creation (not in ArgoCD)
 ```
 
 ## Node Labels
@@ -88,6 +110,8 @@ Apply these labels before running ArgoCD apps:
 ```bash
 kubectl label node k8s-micro-node-3 micro/role=monitoring
 ```
+
+The GPU node label (`nvidia.com/gpu.present=true`) is applied automatically by the NVIDIA device plugin once the DaemonSet is running.
 
 ## Usage
 
@@ -109,7 +133,18 @@ ArgoCD will sync all apps automatically in sync-wave order:
 | -2 | istio-base |
 | -1 | istiod |
 | 0 | istio-igw-internal, istio-igw-external |
-| 1 | hubble, kiali-operator, kube-prometheus-stack, loki, prometheus-snmp-exporter |
-| 2 | data-pipeline |
+| 1 | hubble, kiali-operator, kube-prometheus-stack, loki, prometheus-snmp-exporter, nvidia-device-plugin |
+| 2 | data-pipeline, postgresql, qdrant, ollama |
+| 3 | open-webui, pipelines, langfuse |
 
-> Each app directory follows the Helm wrapper chart pattern: a local `Chart.yaml` declares a single upstream dependency, and values are nested under the dependency chart name.
+> Most Helm-based apps follow the wrapper chart pattern: a local `Chart.yaml` declares a single upstream dependency with values nested under the dependency name. Langfuse uses ArgoCD multi-source (Helm repo + Git values + Git raw manifests). Raw-manifest apps (ollama, open-webui, qdrant, pipelines) use plain directory sync.
+
+## Secrets
+
+Secrets are created manually via `scripts/create-secrets.sh` and are not managed by ArgoCD. Required secrets per namespace:
+
+| Namespace | Secret | Used by |
+|-----------|--------|---------|
+| `ai` | `langfuse-secrets` | Langfuse (salt, encryption-key, nextauth-secret, db-password) |
+| `ai` | `langfuse-pipeline-credentials` | Pipelines → Langfuse SDK (public-key, secret-key) |
+| `monitoring` | `grafana-db-credentials` | Grafana PostgreSQL password |
