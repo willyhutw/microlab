@@ -11,8 +11,8 @@ spec:
     repoURL: 'git@github.com:willyhutw/microlab.git'
     targetRevision: HEAD
     path: argocd/internal/pipelines
-    directory:
-      recurse: true
+    kustomize:
+      buildOptions: "--load-restrictor LoadRestrictionsNone"
   destination:
     name: micro
     namespace: ai

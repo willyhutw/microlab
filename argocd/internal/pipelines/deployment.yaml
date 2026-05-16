@@ -12,10 +12,6 @@ spec:
     metadata:
       labels:
         app: pipelines
-      annotations:
-        # Update this value to force a rollout when pipeline-cm.yaml changes.
-        # subPath mounts do not auto-reload on ConfigMap updates.
-        pipeline-version: "2026-05-17"
     spec:
       containers:
         - name: pipelines
