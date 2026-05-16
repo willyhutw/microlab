@@ -33,7 +33,7 @@
     "id": 5,
     "query": "英文學習計畫的起點和目標？",
     "expected_doc": "English Learning Plan — B1 to C1",
-    "expected_section": "背景",
+    "expected_section": "三大核心",
     "category": "learning"
   },
   {
@@ -60,8 +60,8 @@
   {
     "id": 9,
     "query": "Hybrid Search 怎麼做 BM25 sparse vector？",
-    "expected_doc": "RAG Pipeline Roadmap（Phase 3）",
-    "expected_section": "Step 5：Hybrid Search ✅（2026-05-17 完成）",
+    "expected_doc": "RAG Pipeline Implementation",
+    "expected_section": "ingest.py 流程",
     "category": "homelab"
   },
   {
