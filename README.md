@@ -85,9 +85,9 @@ ArgoCD application manifests for the micro cluster — 4× Raspberry Pi 5 nodes 
 │   │   │   └── tools/                   # generator.yaml for SNMP MIB generation (local tool)
 │   │   ├── nvidia-device-plugin/        # NVIDIA GPU device plugin DaemonSet
 │   │   ├── postgresql/                  # Shared PostgreSQL (bitnami Helm chart + PV/PVC)
-│   │   ├── qdrant/                      # Qdrant vector database (Deployment + PV/PVC)
-│   │   ├── ollama/                      # Ollama LLM inference (Deployment + PV/PVC + model init job)
-│   │   ├── open-webui/                  # Open WebUI chat frontend (Deployment + Istio resources)
+│   │   ├── qdrant/                      # Qdrant vector database (Deployment + PV/PVC + Istio resources)
+│   │   ├── ollama/                      # Ollama LLM inference (Deployment + PV/PVC + namespace + RuntimeClass + model init job + Istio resources)
+│   │   ├── open-webui/                  # Open WebUI chat frontend (Deployment + PV/PVC + Istio resources)
 │   │   ├── pipelines/                   # Open WebUI Pipelines (Deployment + ConfigMap for rag_pipeline.py via kustomize configMapGenerator)
 │   │   └── langfuse/                    # Langfuse LLM observability (multi-source: Helm + Git)
 │   │       ├── values.yaml              # Helm values (ClickHouse/Redis/MinIO/PostgreSQL config)
@@ -139,7 +139,7 @@ ArgoCD will sync all apps automatically in sync-wave order:
 | 2 | data-pipeline, postgresql, qdrant, ollama |
 | 3 | open-webui, pipelines, langfuse |
 
-> Most Helm-based apps follow the wrapper chart pattern: a local `Chart.yaml` declares a single upstream dependency with values nested under the dependency name. Langfuse uses ArgoCD multi-source (Helm repo + Git values + Git raw manifests). Raw-manifest apps (ollama, open-webui, qdrant, pipelines) use plain directory sync.
+> Most Helm-based apps follow the wrapper chart pattern: a local `Chart.yaml` declares a single upstream dependency with values nested under the dependency name. Langfuse uses ArgoCD multi-source (Helm repo + Git values + Git raw manifests). Raw-manifest apps (ollama, open-webui, qdrant) use plain directory sync; pipelines uses kustomize directory sync.
 
 ## Secrets
 
