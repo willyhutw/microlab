@@ -62,45 +62,47 @@ class Pipeline:
         body: dict,
     ) -> Union[str, Generator, Iterator]:
 
-        trace = self.langfuse.trace(
+        with self.langfuse.start_as_current_span(
             name="rag-query",
             input=user_message,
-            metadata={"collection": self.collection, "top_k": self.top_k},
-        )
+        ) as trace:
+            trace.update(metadata={"collection": self.collection, "top_k": self.top_k})
 
-        # Embed + Retrieve
-        retrieve_span = trace.span(name="retrieve", input=user_message)
-        results = self._retrieve(user_message)
-        retrieve_span.end(
-            output=[
-                {
-                    "doc": r.payload["doc_title"],
-                    "section": r.payload["title"],
-                    "score": round(r.score, 4),
-                }
+            # Embed + Retrieve
+            with self.langfuse.start_as_current_span(
+                name="retrieve", input=user_message
+            ) as span:
+                results = self._retrieve(user_message)
+                span.update(
+                    output=[
+                        {
+                            "doc": r.payload["doc_title"],
+                            "section": r.payload["title"],
+                            "score": round(r.score, 4),
+                        }
+                        for r in results
+                    ]
+                )
+
+            if not results:
+                trace.update(output="no results found")
+                self.langfuse.flush()
+                yield "（知識庫中找不到相關內容，請確認 obsidian-wiki collection 是否有資料）"
+                return
+
+            # Show retrieved sources
+            sources = "\n".join(
+                f"- **{r.payload['doc_title']} › {r.payload['title']}** `{r.score:.3f}`"
                 for r in results
-            ]
-        )
+            )
+            yield f"**Retrieved chunks:**\n{sources}\n\n---\n\n"
 
-        if not results:
-            trace.update(output="no results found")
-            self.langfuse.flush()
-            yield "（知識庫中找不到相關內容，請確認 obsidian-wiki collection 是否有資料）"
-            return
-
-        # Show retrieved sources
-        sources = "\n".join(
-            f"- **{r.payload['doc_title']} › {r.payload['title']}** `{r.score:.3f}`"
-            for r in results
-        )
-        yield f"**Retrieved chunks:**\n{sources}\n\n---\n\n"
-
-        # Build context + prompt
-        context = "\n\n---\n\n".join(
-            f"[{r.payload['doc_title']} › {r.payload['title']}]\n{r.payload['content']}"
-            for r in results
-        )
-        prompt = f"""你是一個知識庫助手。根據以下知識庫內容回答問題，並標注資訊來源。若內容不足以回答，請直接說明。
+            # Build context + prompt
+            context = "\n\n---\n\n".join(
+                f"[{r.payload['doc_title']} › {r.payload['title']}]\n{r.payload['content']}"
+                for r in results
+            )
+            prompt = f"""你是一個知識庫助手。根據以下知識庫內容回答問題，並標注資訊來源。若內容不足以回答，請直接說明。
 
 === 知識庫內容 ===
 {context}
@@ -108,31 +110,31 @@ class Pipeline:
 === 問題 ===
 {user_message}"""
 
-        # Stream response from Ollama, tracked as a Langfuse generation
-        generation = trace.generation(
-            name="generate",
-            model=self.llm_model,
-            input=prompt,
-        )
+            # Stream response from Ollama, tracked as a Langfuse generation
+            output_tokens = []
+            with self.langfuse.start_as_current_generation(
+                name="generate",
+                model=self.llm_model,
+                input=prompt,
+            ) as gen:
+                resp = requests.post(
+                    f"{self.ollama_url}/api/generate",
+                    json={"model": self.llm_model, "prompt": prompt, "stream": True},
+                    stream=True,
+                    timeout=120,
+                )
+                resp.raise_for_status()
 
-        resp = requests.post(
-            f"{self.ollama_url}/api/generate",
-            json={"model": self.llm_model, "prompt": prompt, "stream": True},
-            stream=True,
-            timeout=120,
-        )
-        resp.raise_for_status()
+                for line in resp.iter_lines():
+                    if line:
+                        data = json.loads(line)
+                        if token := data.get("response"):
+                            output_tokens.append(token)
+                            yield token
+                        if data.get("done"):
+                            gen.update(output="".join(output_tokens))
+                            break
 
-        output_tokens = []
-        for line in resp.iter_lines():
-            if line:
-                data = json.loads(line)
-                if token := data.get("response"):
-                    output_tokens.append(token)
-                    yield token
-                if data.get("done"):
-                    full_output = "".join(output_tokens)
-                    generation.end(output=full_output)
-                    trace.update(output=full_output)
-                    self.langfuse.flush()
-                    break
+            trace.update(output="".join(output_tokens))
+
+        self.langfuse.flush()
