@@ -8,16 +8,19 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: 'git@github.com:willyhutw/microlab.git'
-      path: argocd/internal/langfuse
-      targetRevision: HEAD
+    - repoURL: 'https://langfuse.github.io/langfuse-k8s'
+      chart: langfuse
+      targetRevision: 1.5.30
       helm:
-        valueFiles:
-          - values.yaml
         releaseName: langfuse
+        valueFiles:
+          - $langfuse-values/argocd/internal/langfuse/values.yaml
     - repoURL: 'git@github.com:willyhutw/microlab.git'
-      path: argocd/internal/langfuse/resources
       targetRevision: HEAD
+      ref: langfuse-values
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      targetRevision: HEAD
+      path: argocd/internal/langfuse/resources
   destination:
     name: micro
     namespace: ai
