@@ -61,7 +61,7 @@
     "id": 9,
     "query": "Hybrid Search 怎麼做 BM25 sparse vector？",
     "expected_doc": "RAG Pipeline Implementation",
-    "expected_section": "ingest.py 流程",
+    "expected_section": "Hybrid Search（2026-05-17）",
     "category": "homelab"
   },
   {

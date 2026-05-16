@@ -44,6 +44,7 @@ def clean_wikilinks(text: str) -> str:
 def chunk_by_headers(text: str, source: str) -> list[dict]:
     title_m = re.search(r"^# (.+)$", text, re.MULTILINE)
     doc_title = title_m.group(1).strip() if title_m else source
+    has_sections = bool(re.search(r"\n## ", text))
 
     chunks = []
     for section in re.split(r"\n(?=## )", text):
@@ -54,6 +55,11 @@ def chunk_by_headers(text: str, source: str) -> list[dict]:
         header = lines[0].lstrip("#").strip()
         body   = "\n".join(lines[1:]).strip()
         if len(body) < 30:
+            continue
+        # Skip the pre-section preamble (header == doc_title) when ## sections exist.
+        # This chunk scores artificially high in RRF because it semantically covers
+        # the whole document, overshadowing more specific section chunks.
+        if has_sections and header == doc_title:
             continue
         chunks.append({
             "source":    source,
@@ -124,13 +130,8 @@ def make_id(source: str, title: str) -> int:
 def setup_collection(client: QdrantClient):
     existing = [c.name for c in client.get_collections().collections]
     if COLLECTION in existing:
-        info = client.get_collection(COLLECTION)
-        if not info.config.params.sparse_vectors:
-            print("  ⚠ Recreating collection (schema upgrade: adding sparse vectors)...")
-            client.delete_collection(COLLECTION)
-        else:
-            print(f"  ✓ Collection ready:   {COLLECTION}")
-            return
+        client.delete_collection(COLLECTION)
+        print(f"  ↺ Dropped collection: {COLLECTION}")
     client.create_collection(
         COLLECTION,
         vectors_config={"dense": VectorParams(size=VECTOR_DIM, distance=Distance.COSINE)},
