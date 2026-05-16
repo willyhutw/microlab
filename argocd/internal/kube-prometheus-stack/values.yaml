@@ -86,9 +86,11 @@ kube-prometheus-stack:
     env:
       GF_AUTH_ANONYMOUS_ENABLED: true
     # GF_DATABASE_PASSWORD injected from grafana-db-credentials secret
-    envFrom:
-      - secretRef:
+    envValueFrom:
+      GF_DATABASE_PASSWORD:
+        secretKeyRef:
           name: grafana-db-credentials
+          key: GF_DATABASE_PASSWORD
     grafana.ini:
       database:
         type: postgres
