@@ -22,6 +22,10 @@ spec:
           env:
             - name: OLLAMA_BASE_URL
               value: http://ollama.ai.svc.cluster.local:11434
+            - name: VECTOR_DB
+              value: qdrant
+            - name: QDRANT_URI
+              value: http://qdrant.ai.svc.cluster.local:6333
           volumeMounts:
             - name: data
               mountPath: /app/backend/data
