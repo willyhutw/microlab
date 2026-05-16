@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: langfuse
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: default
+  sources:
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/langfuse
+      targetRevision: HEAD
+      helm:
+        valueFiles:
+          - values.yaml
+        releaseName: langfuse
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/langfuse/resources
+      targetRevision: HEAD
+  destination:
+    name: micro
+    namespace: ai
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

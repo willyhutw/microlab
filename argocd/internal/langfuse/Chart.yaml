@@ -1,0 +1,10 @@
+apiVersion: v2
+name: langfuse
+description: Langfuse LLM observability platform (Lite mode - PostgreSQL only)
+type: application
+version: 0.1.0
+dependencies:
+  # Check latest: helm repo add langfuse https://langfuse.github.io/langfuse-k8s && helm search repo langfuse/langfuse
+  - name: langfuse
+    version: "0.9.0"
+    repository: https://langfuse.github.io/langfuse-k8s

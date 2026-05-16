@@ -1,0 +1,35 @@
+postgresql:
+  auth:
+    existingSecret: postgresql-credentials
+    secretKeys:
+      adminPasswordKey: postgres-password
+      userPasswordKey: password
+
+  primary:
+    # Create grafana database + user on first init.
+    # GRAFANA_PASSWORD is injected via extraEnvVars from the same secret.
+    initdb:
+      scripts:
+        create-grafana-db.sh: |
+          #!/bin/bash
+          set -e
+          psql -U postgres -c "CREATE USER grafana WITH PASSWORD '${GRAFANA_PASSWORD}';"
+          psql -U postgres -c "CREATE DATABASE grafana OWNER grafana;"
+          psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE grafana TO grafana;"
+
+    extraEnvVars:
+      - name: GRAFANA_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: postgresql-credentials
+            key: grafana-password
+
+    persistence:
+      existingClaim: postgresql
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi

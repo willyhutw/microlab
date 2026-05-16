@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: langfuse-gateway
+  namespace: ai
+spec:
+  selector:
+    istio: ingressgateway
+    igw-type: internal
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - langfuse.willyhu.tw
+      tls:
+        httpsRedirect: true
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - langfuse.willyhu.tw
+      tls:
+        credentialName: langfuse-willyhu-tw-tls
+        mode: SIMPLE

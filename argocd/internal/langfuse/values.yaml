@@ -1,0 +1,43 @@
+langfuse:
+  nextauth:
+    url: "https://langfuse.willyhu.tw"
+  # All secrets come from langfuse-secrets (created via scripts/create-secrets.sh)
+  existingSecret: langfuse-secrets
+  existingSecretKey:
+    nextauthSecret: nextauth-secret
+    salt: salt
+    encryptionKey: encryption-key
+    databaseUrl: database-url
+  telemetryEnabled: false
+
+# Disable bundled PostgreSQL — using shared external instance in data namespace
+postgresql:
+  enabled: false
+
+# Disable ClickHouse — Lite mode
+clickhouse:
+  enabled: false
+
+# Pi5-friendly resource limits
+web:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+worker:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: false

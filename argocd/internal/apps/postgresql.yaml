@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgresql
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  sources:
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/postgresql
+      targetRevision: HEAD
+      helm:
+        valueFiles:
+          - values.yaml
+        releaseName: postgresql
+    - repoURL: 'git@github.com:willyhutw/microlab.git'
+      path: argocd/internal/postgresql/resources
+      targetRevision: HEAD
+  destination:
+    name: micro
+    namespace: data
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

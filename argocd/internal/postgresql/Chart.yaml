@@ -1,0 +1,10 @@
+apiVersion: v2
+name: postgresql
+description: Shared PostgreSQL instance for Langfuse and Grafana
+type: application
+version: 0.1.0
+dependencies:
+  # Check latest: helm repo add bitnami https://charts.bitnami.com/bitnami && helm search repo bitnami/postgresql
+  - name: postgresql
+    version: "18.6.6"
+    repository: https://charts.bitnami.com/bitnami

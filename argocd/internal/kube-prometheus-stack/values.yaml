@@ -85,7 +85,18 @@ kube-prometheus-stack:
       existingClaim: grafana
     env:
       GF_AUTH_ANONYMOUS_ENABLED: true
+    # GF_DATABASE_PASSWORD injected from grafana-db-credentials secret
+    envFrom:
+      - secretRef:
+          name: grafana-db-credentials
     grafana.ini:
+      database:
+        type: postgres
+        host: postgresql.data.svc.cluster.local:5432
+        name: grafana
+        user: grafana
+        password: "${GF_DATABASE_PASSWORD}"
+        ssl_mode: disable
       analytics:
         enabled: false
         reporting_enabled: false
