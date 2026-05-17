@@ -39,7 +39,7 @@ class Pipeline:
         self.ollama_url = os.getenv("OLLAMA_URL", "http://ollama.ai.svc.cluster.local:11434")
         self.qdrant_url = os.getenv("QDRANT_URL", "http://qdrant.ai.svc.cluster.local:6333")
         self.embed_model = "qwen3-embedding:0.6b"
-        self.llm_model = os.getenv("LLM_MODEL", "gemma3:4b")
+        self.llm_model = os.getenv("LLM_MODEL", "gemma4-e2b")
         self.collection = "obsidian-wiki"
         self.top_k = 5
         self.langfuse = Langfuse(
@@ -119,14 +119,14 @@ class Pipeline:
                 f"[{r.payload['doc_title']} › {r.payload['title']}]\n{r.payload['content']}"
                 for r in results
             )
-            prompt = f"""You are Willy's personal assistant, familiar with his background, goals, and plans. The following are relevant excerpts from his personal knowledge base, providing you with personal context.
+            prompt = f"""你是 Willy 的個人助理，熟悉他的背景、目標和計畫。以下是他知識庫的相關節錄，提供你個人脈絡。
 
-Use the knowledge base content as the primary source for personal context, but feel free to supplement with your own knowledge, analysis, or elaboration. For questions about Willy's personal situation, rely on the knowledge base; for technical explanations, recommendations, or broader discussion, expand freely.
+請以知識庫內容作為個人背景依據，但可以自由補充你自己的知識、分析或延伸說明。若問題涉及 Willy 的個人狀況，以知識庫為準；若需要技術解釋、建議或更廣泛的討論，直接展開。請用使用者提問的語言回答。
 
-=== Knowledge Base ===
+=== 知識庫內容 ===
 {context}
 
-=== Question ===
+=== 問題 ===
 {user_message}"""
 
             # Stream response from Ollama, tracked as a Langfuse generation
