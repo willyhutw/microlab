@@ -114,24 +114,19 @@ class Pipeline:
                 yield "（知識庫中找不到相關內容，請確認 obsidian-wiki collection 是否有資料）"
                 return
 
-            # Show retrieved sources
-            sources = "\n".join(
-                f"- **{r.payload['doc_title']} › {r.payload['title']}** `{r.score:.3f}`"
-                for r in results
-            )
-            yield f"**Retrieved chunks:**\n{sources}\n\n---\n\n"
-
             # Build context + prompt
             context = "\n\n---\n\n".join(
                 f"[{r.payload['doc_title']} › {r.payload['title']}]\n{r.payload['content']}"
                 for r in results
             )
-            prompt = f"""你是一個知識庫助手。根據以下知識庫內容回答問題，並標注資訊來源。若內容不足以回答，請直接說明。
+            prompt = f"""You are Willy's personal assistant, familiar with his background, goals, and plans. The following are relevant excerpts from his personal knowledge base, providing you with personal context.
 
-=== 知識庫內容 ===
+Use the knowledge base content as the primary source for personal context, but feel free to supplement with your own knowledge, analysis, or elaboration. For questions about Willy's personal situation, rely on the knowledge base; for technical explanations, recommendations, or broader discussion, expand freely.
+
+=== Knowledge Base ===
 {context}
 
-=== 問題 ===
+=== Question ===
 {user_message}"""
 
             # Stream response from Ollama, tracked as a Langfuse generation
