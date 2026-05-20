@@ -151,11 +151,23 @@ class Pipeline:
                             output_tokens.append(token)
                             yield token
                         if data.get("done"):
+                            prefill_tokens = data.get("prompt_eval_count", 0)
+                            prefill_ns    = data.get("prompt_eval_duration", 0)
+                            decode_tokens = data.get("eval_count", 0)
+                            decode_ns     = data.get("eval_duration", 0)
                             gen.update(
                                 output="".join(output_tokens),
                                 usage_details={
-                                    "input": data.get("prompt_eval_count", 0),
-                                    "output": data.get("eval_count", 0),
+                                    "input": prefill_tokens,
+                                    "output": decode_tokens,
+                                },
+                                metadata={
+                                    "prefill_tokens": prefill_tokens,
+                                    "prefill_ms":     round(prefill_ns / 1e6, 2),
+                                    "prefill_tps":    round(prefill_tokens / prefill_ns * 1e9, 1) if prefill_ns else 0,
+                                    "decode_tokens":  decode_tokens,
+                                    "decode_ms":      round(decode_ns / 1e6, 2),
+                                    "decode_tps":     round(decode_tokens / decode_ns * 1e9, 1) if decode_ns else 0,
                                 },
                             )
                             break
