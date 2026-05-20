@@ -13,7 +13,7 @@ spec:
       labels:
         app: pipelines
       annotations:
-        rag-pipeline-checksum: b1772c525950441d
+        rag-pipeline-checksum: 67f6d0936c0cbd69
     spec:
       containers:
         - name: pipelines
