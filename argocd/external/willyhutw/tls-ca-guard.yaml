@@ -1,0 +1,153 @@
+# Guards against cert-manager renewal of istio-system/www-willyhu-tw-tls
+# silently dropping the ca.crt key that the willyhutw Gateway needs for
+# TLS mode: MUTUAL (Cloudflare Authenticated Origin Pulls).
+#
+# cert-manager's Certificate/www-willyhu-tw-tls (certificate.yaml) only
+# manages tls.crt/tls.key; ca.crt was added out-of-band and cert-manager
+# has been observed to drop unrelated keys from the Secret on renewal.
+# This CronJob re-injects the Cloudflare Origin Pull CA if it's missing,
+# so a renewal (every ~90d, cert-manager renews ~15d before expiry) can't
+# silently break mTLS on the gateway.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflare-origin-pull-ca
+  namespace: istio-system
+data:
+  # Cloudflare's Authenticated Origin Pull CA. Static, long-lived
+  # (valid 2019-10-10 to 2029-11-01), published at
+  # https://developers.cloudflare.com/ssl/static/authenticated_origin_pull_ca.pem
+  # Embedded rather than fetched at runtime so the guard has no external
+  # network dependency and can't be broken by an egress policy or a
+  # Cloudflare docs page change.
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIGCjCCA/KgAwIBAgIIV5G6lVbCLmEwDQYJKoZIhvcNAQENBQAwgZAxCzAJBgNV
+    BAYTAlVTMRkwFwYDVQQKExBDbG91ZEZsYXJlLCBJbmMuMRQwEgYDVQQLEwtPcmln
+    aW4gUHVsbDEWMBQGA1UEBxMNU2FuIEZyYW5jaXNjbzETMBEGA1UECBMKQ2FsaWZv
+    cm5pYTEjMCEGA1UEAxMab3JpZ2luLXB1bGwuY2xvdWRmbGFyZS5uZXQwHhcNMTkx
+    MDEwMTg0NTAwWhcNMjkxMTAxMTcwMDAwWjCBkDELMAkGA1UEBhMCVVMxGTAXBgNV
+    BAoTEENsb3VkRmxhcmUsIEluYy4xFDASBgNVBAsTC09yaWdpbiBQdWxsMRYwFAYD
+    VQQHEw1TYW4gRnJhbmNpc2NvMRMwEQYDVQQIEwpDYWxpZm9ybmlhMSMwIQYDVQQD
+    ExpvcmlnaW4tcHVsbC5jbG91ZGZsYXJlLm5ldDCCAiIwDQYJKoZIhvcNAQEBBQAD
+    ggIPADCCAgoCggIBAN2y2zojYfl0bKfhp0AJBFeV+jQqbCw3sHmvEPwLmqDLqynI
+    42tZXR5y914ZB9ZrwbL/K5O46exd/LujJnV2b3dzcx5rtiQzso0xzljqbnbQT20e
+    ihx/WrF4OkZKydZzsdaJsWAPuplDH5P7J82q3re88jQdgE5hqjqFZ3clCG7lxoBw
+    hLaazm3NJJlUfzdk97ouRvnFGAuXd5cQVx8jYOOeU60sWqmMe4QHdOvpqB91bJoY
+    QSKVFjUgHeTpN8tNpKJfb9LIn3pun3bC9NKNHtRKMNX3Kl/sAPq7q/AlndvA2Kw3
+    Dkum2mHQUGdzVHqcOgea9BGjLK2h7SuX93zTWL02u799dr6Xkrad/WShHchfjjRn
+    aL35niJUDr02YJtPgxWObsrfOU63B8juLUphW/4BOjjJyAG5l9j1//aUGEi/sEe5
+    lqVv0P78QrxoxR+MMXiJwQab5FB8TG/ac6mRHgF9CmkX90uaRh+OC07XjTdfSKGR
+    PpM9hB2ZhLol/nf8qmoLdoD5HvODZuKu2+muKeVHXgw2/A6wM7OwrinxZiyBk5Hh
+    CvaADH7PZpU6z/zv5NU5HSvXiKtCzFuDu4/Zfi34RfHXeCUfHAb4KfNRXJwMsxUa
+    +4ZpSAX2G6RnGU5meuXpU5/V+DQJp/e69XyyY6RXDoMywaEFlIlXBqjRRA2pAgMB
+    AAGjZjBkMA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgECMB0GA1Ud
+    DgQWBBRDWUsraYuA4REzalfNVzjann3F6zAfBgNVHSMEGDAWgBRDWUsraYuA4REz
+    alfNVzjann3F6zANBgkqhkiG9w0BAQ0FAAOCAgEAkQ+T9nqcSlAuW/90DeYmQOW1
+    QhqOor5psBEGvxbNGV2hdLJY8h6QUq48BCevcMChg/L1CkznBNI40i3/6heDn3IS
+    zVEwXKf34pPFCACWVMZxbQjkNRTiH8iRur9EsaNQ5oXCPJkhwg2+IFyoPAAYURoX
+    VcI9SCDUa45clmYHJ/XYwV1icGVI8/9b2JUqklnOTa5tugwIUi5sTfipNcJXHhgz
+    6BKYDl0/UP0lLKbsUETXeTGDiDpxZYIgbcFrRDDkHC6BSvdWVEiH5b9mH2BON60z
+    0O0j8EEKTwi9jnafVtZQXP/D8yoVowdFDjXcKkOPF/1gIh9qrFR6GdoPVgB3SkLc
+    5ulBqZaCHm563jsvWb/kXJnlFxW+1bsO9BDD6DweBcGdNurgmH625wBXksSdD7y/
+    fakk8DagjbjKShYlPEFOAqEcliwjF45eabL0t27MJV61O/jHzHL3dknXeE4BDa2j
+    bA+JbyJeUMtU7KMsxvx82RmhqBEJJDBCJ3scVptvhDMRrtqDBW5JShxoAOcpFQGm
+    iYWicn46nPDjgTU0bX1ZPpTpryXbvciVL5RkVBuyX2ntcOLDPlZWgxZCBp96x07F
+    AnOzKgZk4RzZPNAxCXERVxajn/FLcOhglVAKo5H0ac+AitlQ0ip55D2/mf8o72tM
+    fVQ6VpyjEXdiIXWUq/o=
+    -----END CERTIFICATE-----
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tls-ca-guard
+  namespace: istio-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tls-ca-guard
+  namespace: istio-system
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["www-willyhu-tw-tls"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tls-ca-guard
+  namespace: istio-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tls-ca-guard
+subjects:
+  - kind: ServiceAccount
+    name: tls-ca-guard
+    namespace: istio-system
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: tls-ca-guard
+  namespace: istio-system
+spec:
+  # Cloudflare's Certificate renews every 90d with a 15d renewBefore
+  # window (certificate.yaml); every 6h comfortably catches a dropped
+  # ca.crt well inside that window.
+  schedule: "17 */6 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          serviceAccountName: tls-ca-guard
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: tls-ca-guard
+              # alpine/k8s bundles a matching kubectl + bash + coreutils,
+              # is actively maintained, and publishes linux/arm64 builds
+              # (this cluster's worker nodes are Raspberry Pi 5 / arm64).
+              image: alpine/k8s:1.32.13
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+                  SECRET=www-willyhu-tw-tls
+                  NS=istio-system
+
+                  current="$(kubectl get secret "$SECRET" -n "$NS" -o jsonpath='{.data.ca\.crt}' 2>/dev/null || true)"
+                  if [[ -n "$current" ]]; then
+                    echo "OK: ${NS}/${SECRET} already has ca.crt, nothing to do."
+                    exit 0
+                  fi
+
+                  echo "WARN: ${NS}/${SECRET} is missing ca.crt, patching from embedded Cloudflare Origin Pull CA..."
+                  ca_b64="$(base64 -w0 /etc/cloudflare-ca/ca.crt)"
+                  kubectl patch secret "$SECRET" -n "$NS" --type merge \
+                    -p "{\"data\":{\"ca.crt\":\"${ca_b64}\"}}"
+                  echo "OK: patched ca.crt into ${NS}/${SECRET}."
+              volumeMounts:
+                - name: cloudflare-ca
+                  mountPath: /etc/cloudflare-ca
+                  readOnly: true
+          volumes:
+            - name: cloudflare-ca
+              configMap:
+                name: cloudflare-origin-pull-ca
