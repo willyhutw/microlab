@@ -32,4 +32,4 @@ spec:
         - www.willyhu.tw
       tls:
         credentialName: www-willyhu-tw-tls
-        mode: MUTUAL
+        mode: SIMPLE
