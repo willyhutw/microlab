@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-initdb
+  namespace: data
+  labels:
+    app.kubernetes.io/name: postgres
+data:
+  # Runs once, only when PGDATA is empty (docker-entrypoint-initdb.d).
+  # Passwords come from env (secret postgresql-credentials) and are passed as
+  # psql variables, so no quoting/escaping issues and nothing lands in Git.
+  10-create-roles.sh: |
+    #!/bin/bash
+    set -euo pipefail
+    psql -v ON_ERROR_STOP=1 --no-password \
+      --username "${POSTGRES_USER:-postgres}" --dbname postgres \
+      -v grafana_pw="${GRAFANA_PASSWORD}" \
+      -v langfuse_pw="${LANGFUSE_PASSWORD}" <<'EOSQL'
+    CREATE ROLE grafana LOGIN PASSWORD :'grafana_pw';
+    CREATE DATABASE grafana OWNER grafana;
+    CREATE ROLE langfuse LOGIN PASSWORD :'langfuse_pw';
+    CREATE DATABASE langfuse OWNER langfuse;
+    EOSQL

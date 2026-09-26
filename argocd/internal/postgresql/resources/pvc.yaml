@@ -1,3 +1,5 @@
+# Legacy Bitnami data dir (/mnt/data/postgresql), no longer mounted.
+# Kept bound for rollback only; remove in a follow-up PR once postgres (v2) is verified.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

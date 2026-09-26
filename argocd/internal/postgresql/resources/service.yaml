@@ -1,0 +1,33 @@
+# Service name kept as `postgresql` so Grafana / langfuse keep using
+# postgresql.data.svc.cluster.local:5432 unchanged.
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql
+  namespace: data
+  labels:
+    app.kubernetes.io/name: postgres
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: postgres
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: postgresql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-headless
+  namespace: data
+  labels:
+    app.kubernetes.io/name: postgres
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: postgres
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: postgresql
