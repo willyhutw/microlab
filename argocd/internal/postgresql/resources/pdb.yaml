@@ -1,0 +1,13 @@
+# Replaces the PDB the Bitnami chart used to render (data/postgresql, maxUnavailable: 1).
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: postgresql
+  namespace: data
+  labels:
+    app.kubernetes.io/name: postgres
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres
