@@ -1,9 +1,7 @@
-# Legacy Bitnami data dir (/mnt/data/postgresql), no longer mounted.
-# Kept bound for rollback only; remove in a follow-up PR once postgres (v2) is verified.
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: postgresql
+  name: postgresql-v2
 spec:
   storageClassName: local-storage
   persistentVolumeReclaimPolicy: Retain
@@ -11,10 +9,12 @@ spec:
     storage: 10Gi
   accessModes:
     - ReadWriteOnce
+  # Pre-create on node-1 before sync: mkdir -p + chown 999:999 + chmod 700
+  # (official postgres image runs as uid/gid 999; local PVs are not provisioned)
   local:
-    path: /mnt/data/postgresql
+    path: /mnt/data/postgresql-v2
   claimRef:
-    name: postgresql
+    name: postgresql-v2
     namespace: data
   nodeAffinity:
     required:

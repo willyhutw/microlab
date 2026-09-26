@@ -12,14 +12,14 @@ spec:
       serviceAccountName: istiod
       containers:
         - name: wait
-          image: bitnami/kubectl:latest
-          command:
-            - /bin/sh
-            - -c
-            - |
-              until kubectl get mutatingwebhookconfiguration istio-sidecar-injector \
-                -o jsonpath='{.webhooks[0].clientConfig.caBundle}' 2>/dev/null | grep -q .; do
-                echo "Waiting for istiod webhook caBundle..."; sleep 2
-              done
-              echo "Webhook ready."
+          # Official kubectl image (distroless, no shell) pinned by multi-arch digest;
+          # keep the minor in step with the cluster (kubeadm v1.36).
+          image: registry.k8s.io/kubectl:v1.36.4@sha256:b8d523e7b8cdc5e3caa0f8891ee9f504abf137dec786e6e0ddd33e4f272c2f13
+          # caBundle is omitted from the object until istiod injects it, so a
+          # value-less jsonpath wait means "caBundle is present and non-empty".
+          args:
+            - wait
+            - --for=jsonpath={.webhooks[0].clientConfig.caBundle}
+            - --timeout=300s
+            - mutatingwebhookconfiguration/istio-sidecar-injector
       restartPolicy: OnFailure

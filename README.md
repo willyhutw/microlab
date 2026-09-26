@@ -43,7 +43,7 @@ ArgoCD application manifests for the micro cluster — 4× Raspberry Pi 5 nodes 
 | prometheus-snmp-exporter | prometheus-community/prometheus-snmp-exporter | 9.3.0 | monitoring | SNMP metrics for pfSense |
 | nvidia-device-plugin | — | v0.17.0 | kube-system | NVIDIA GPU device plugin DaemonSet for GPU node |
 | data-pipeline | — | — | monitoring | Fluent Bit log pipeline: syslog entry → filter → Loki |
-| postgresql | bitnami/postgresql | 18.6.6 | data | Shared PostgreSQL instance (Langfuse + Grafana) |
+| postgresql | — (official `postgres` image) | 18.6 | data | Shared PostgreSQL instance (Langfuse + Grafana) |
 | qdrant | — | — | ai | Vector database for RAG pipeline |
 | ollama | — | latest | ai | LLM inference server (GPU node, RTX 2060 Max-Q) |
 | open-webui | — | latest | ai | Chat UI — [chat.willyhu.tw](https://chat.willyhu.tw) |
@@ -84,7 +84,7 @@ ArgoCD application manifests for the micro cluster — 4× Raspberry Pi 5 nodes 
 │   │   ├── prometheus-snmp-exporter/    # SNMP exporter Helm chart
 │   │   │   └── tools/                   # generator.yaml for SNMP MIB generation (local tool)
 │   │   ├── nvidia-device-plugin/        # NVIDIA GPU device plugin DaemonSet
-│   │   ├── postgresql/                  # Shared PostgreSQL (bitnami Helm chart + PV/PVC)
+│   │   ├── postgresql/                  # Shared PostgreSQL (StatefulSet on official postgres:18 + PV/PVC)
 │   │   ├── qdrant/                      # Qdrant vector database (Deployment + PV/PVC + Istio resources)
 │   │   ├── ollama/                      # Ollama LLM inference (Deployment + PV/PVC + namespace + RuntimeClass + model init job + Istio resources)
 │   │   ├── open-webui/                  # Open WebUI chat frontend (Deployment + PV/PVC + Istio resources)
@@ -139,7 +139,7 @@ ArgoCD will sync all apps automatically in sync-wave order:
 | 2 | data-pipeline, postgresql, qdrant, ollama |
 | 3 | open-webui, pipelines, langfuse |
 
-> Most Helm-based apps follow the wrapper chart pattern: a local `Chart.yaml` declares a single upstream dependency with values nested under the dependency name. Langfuse uses ArgoCD multi-source (Helm repo + Git values + Git raw manifests). Raw-manifest apps (ollama, open-webui, qdrant) use plain directory sync; pipelines uses kustomize directory sync.
+> Most Helm-based apps follow the wrapper chart pattern: a local `Chart.yaml` declares a single upstream dependency with values nested under the dependency name. Langfuse uses ArgoCD multi-source (Helm repo + Git values + Git raw manifests). Raw-manifest apps (ollama, open-webui, qdrant, postgresql) use plain directory sync; pipelines uses kustomize directory sync.
 
 ## Secrets
 
